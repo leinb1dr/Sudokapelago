@@ -81,7 +81,7 @@ test('generates a playable puzzle with locked givens at the selected difficulty'
 }) => {
   await page.goto('/')
 
-  await page.getByRole('radio', { name: /Hard/ }).check()
+  await page.getByText('Hard', { exact: true }).click()
   await page.getByRole('button', { name: 'Generate hard puzzle' }).click()
 
   await expect(page.getByRole('status')).toContainText(

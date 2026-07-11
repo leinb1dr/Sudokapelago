@@ -12,6 +12,7 @@ import {
   createSudokuPuzzle,
   tryRemoveClue,
 } from '../../src/sudoku/setter'
+import { DIFFICULTIES } from '../../src/sudoku/types'
 
 const SOLUTION =
   '534678912672195348198342567859761423426853791713924856961537284287419635345286179'
@@ -65,4 +66,20 @@ describe('two-phase Sudoku setter', () => {
     expect(puzzle[0]).toBe(0)
     expect(attempt.solveSteps).toBeGreaterThan(0)
   })
+
+  it.each(DIFFICULTIES)(
+    'produces a puzzle independently solvable at %s difficulty',
+    (difficulty) => {
+      const generated = createSudokuPuzzle({
+        difficulty,
+        random: createSeededRandom(DIFFICULTIES.indexOf(difficulty) + 90),
+      })
+      const solved = solveWithHumanTechniques(generated.puzzle, {
+        difficulty,
+      })
+
+      expect(solved.solved).toBe(true)
+      expect(solved.board).toEqual(generated.solution)
+    },
+  )
 })

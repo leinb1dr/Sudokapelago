@@ -146,7 +146,10 @@ export function boardsEqual(left: Board, right: Board): boolean {
 }
 
 export function countClues(board: Board): number {
-  return board.reduce((count, value) => count + Number(value !== 0), 0)
+  return board.reduce<number>(
+    (count, value) => count + Number(value !== 0),
+    0,
+  )
 }
 
 export function boardFromString(serialized: string): CellValue[] {

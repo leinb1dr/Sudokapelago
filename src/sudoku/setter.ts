@@ -74,6 +74,11 @@ export function createSudokuPuzzle(options: SetterOptions): SudokuPuzzle {
     options.onAttempt?.(attempt, [...puzzle])
   }
 
+  const verification = solveWithHumanTechniques(puzzle, options)
+  if (!verification.solved || !boardsEqual(verification.board, solution)) {
+    throw new Error('The completed puzzle failed its final human-solve check.')
+  }
+
   return {
     puzzle,
     solution,
