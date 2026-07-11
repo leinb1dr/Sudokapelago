@@ -1,5 +1,9 @@
 # Sudokapelago Claude Code Guide
 
+@.claude/memory-bank/activeContext.md
+@.claude/memory-bank/systemPatterns.md
+@docs/ai/known-issues.md
+
 Sudokapelago is a single-page TypeScript app built with React and Vite. It renders a configurable Sudoku website and is expected to integrate with Archipelago multiworld sessions through `archipelago.js`.
 
 ## Project commands
@@ -16,6 +20,15 @@ Sudokapelago is a single-page TypeScript app built with React and Vite. It rende
 - `src/App.css` contains component-level styles.
 - `src/index.css` contains global styles.
 - `public/` contains static assets.
+
+## On-demand memory references
+
+- Read `.claude/memory-bank/progress.md` before milestone, status, or planning work.
+- Read `docs/ai/architecture-decisions.md` before changing core project architecture, tooling, hosting, or integration boundaries.
+- Read `docs/ai/domain-glossary.md` before introducing Sudoku or Archipelago domain terms.
+- Read `docs/ai/integration-patterns.md` before changing `archipelago.js`, deployment, or hosting behavior.
+- Read `docs/ai/data-sources.md` before adding persistence, external data, browser storage, or session state.
+- Read `.claude/claude-files-registry.md` before creating or using local subtree `CLAUDE.md` files.
 
 ## Claude skills installed
 
