@@ -15,4 +15,16 @@ test('landing page introduces Sudokapelago with an empty Sudoku grid', async ({ 
   await expect(cells.first()).toHaveAccessibleName('Empty cell row 1 column 1')
   await expect(cells.last()).toHaveAccessibleName('Empty cell row 9 column 9')
   await expect(cells).toHaveText(Array.from({ length: 81 }, () => ''))
+
+  const gridFrameBorderTopWidth = await grid.evaluate((element) =>
+    getComputedStyle(element, '::after').borderTopWidth,
+  )
+
+  expect(gridFrameBorderTopWidth).toBe('4px')
+  await expect(cells.nth(2)).toHaveCSS('border-right-width', '3px')
+  await expect(cells.nth(5)).toHaveCSS('border-right-width', '3px')
+  await expect(cells.nth(8)).toHaveCSS('border-right-width', '0px')
+  await expect(cells.nth(18)).toHaveCSS('border-bottom-width', '3px')
+  await expect(cells.nth(45)).toHaveCSS('border-bottom-width', '3px')
+  await expect(cells.nth(72)).toHaveCSS('border-bottom-width', '0px')
 })
