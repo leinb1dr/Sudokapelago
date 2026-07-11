@@ -7,7 +7,7 @@ test('landing page introduces Sudokapelago with an empty Sudoku grid', async ({ 
   await expect(page.getByRole('heading', { name: 'Empty Sudoku board' })).toBeVisible()
   await expect(page.getByText('archipelago.js client initialized')).toBeVisible()
 
-  const grid = page.getByRole('grid', { name: 'Empty Sudoku grid' })
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
   const cells = grid.getByRole('gridcell')
 
   await expect(grid).toBeVisible()
@@ -27,4 +27,23 @@ test('landing page introduces Sudokapelago with an empty Sudoku grid', async ({ 
   await expect(cells.nth(18)).toHaveCSS('border-bottom-width', '3px')
   await expect(cells.nth(45)).toHaveCSS('border-bottom-width', '3px')
   await expect(cells.nth(72)).toHaveCSS('border-bottom-width', '0px')
+})
+
+test('grid cells accept only digits 1 through 9 from the keyboard', async ({ page }) => {
+  await page.goto('/')
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
+  const firstCell = grid.getByRole('gridcell').first()
+
+  await firstCell.press('5')
+  await expect(firstCell).toHaveText('5')
+  await expect(firstCell).toHaveAccessibleName('Cell row 1 column 1 value 5')
+
+  await firstCell.press('0')
+  await expect(firstCell).toHaveText('5')
+  await expect(firstCell).toHaveAccessibleName('Cell row 1 column 1 value 5')
+
+  await firstCell.press('9')
+  await expect(firstCell).toHaveText('9')
+  await expect(firstCell).toHaveAccessibleName('Cell row 1 column 1 value 9')
 })
