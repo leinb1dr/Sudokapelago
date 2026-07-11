@@ -58,24 +58,12 @@ test('clicking a grid cell immediately shows it as selected', async ({ page }) =
 
   await firstCell.click()
   await expect(firstCell).toHaveAttribute('aria-selected', 'true')
-  await expect(firstCell).toHaveCSS('background-color', 'rgb(238, 246, 255)')
-  const selectedIndicatorWidths = await firstCell.evaluate((element) => {
-    const selectedIndicatorStyles = getComputedStyle(element, '::after')
-
-    return [
-      selectedIndicatorStyles.borderTopWidth,
-      selectedIndicatorStyles.borderRightWidth,
-      selectedIndicatorStyles.borderBottomWidth,
-      selectedIndicatorStyles.borderLeftWidth,
-    ]
-  })
-
-  expect(selectedIndicatorWidths).toEqual(['3px', '3px', '3px', '3px'])
+  await expect(firstCell).toHaveCSS('background-color', 'rgb(219, 234, 254)')
 
   await secondCell.click()
   await expect(firstCell).toHaveAttribute('aria-selected', 'false')
   await expect(secondCell).toHaveAttribute('aria-selected', 'true')
-  await expect(secondCell).toHaveCSS('background-color', 'rgb(238, 246, 255)')
+  await expect(secondCell).toHaveCSS('background-color', 'rgb(219, 234, 254)')
 
   await page.keyboard.press('5')
   await expect(firstCell).toHaveText('')
