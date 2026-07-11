@@ -1,0 +1,24 @@
+---
+description: Keep web page components modular and file-scoped
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# Modular Web Components
+
+When building or changing anything for the web page:
+
+- Put each reusable React component in its own file.
+- Keep components focused on one responsibility.
+- Prefer composing small components over growing a large page component.
+- Export components clearly from their module, using the repo's existing export style.
+- Keep component-specific helpers, types, and constants close to the component unless they are shared.
+- Move shared UI pieces into a common component file instead of duplicating markup.
+
+```tsx
+// Avoid: multiple reusable components buried in one page file.
+function SettingsPanel() {}
+function DifficultyPicker() {}
+
+// Prefer: SettingsPanel.tsx and DifficultyPicker.tsx as separate modules.
+```
