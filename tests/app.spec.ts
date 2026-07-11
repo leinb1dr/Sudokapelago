@@ -1,10 +1,15 @@
 import { expect, test } from '@playwright/test'
 
-test('landing page introduces Sudokapelago with an empty Sudoku grid', async ({ page }) => {
+test('landing page introduces the human-solvable setter with an empty grid', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.getByRole('heading', { name: 'Sudokapelago' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Empty Sudoku board' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Human-solvable Sudoku setter' }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('Choose a difficulty, then generate a puzzle.'),
+  ).toBeVisible()
   await expect(page.getByText('archipelago.js client initialized')).toBeVisible()
 
   const grid = page.getByRole('grid', { name: 'Sudoku grid' })
@@ -69,4 +74,32 @@ test('clicking a grid cell immediately shows it as selected', async ({ page }) =
   await expect(firstCell).toHaveText('')
   await expect(secondCell).toHaveText('5')
   await expect(secondCell).toHaveAccessibleName('Cell row 1 column 2 value 5')
+})
+
+test('generates a playable puzzle with locked givens at the selected difficulty', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  await page.getByRole('radio', { name: /Hard/ }).check()
+  await page.getByRole('button', { name: 'Generate hard puzzle' }).click()
+
+  await expect(page.getByRole('status')).toContainText(
+    /hard puzzle · \d+ clues · 81 cells tested/,
+  )
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
+  const givenCells = grid.locator('[role="gridcell"][aria-readonly="true"]')
+  const editableCells = grid.locator('[role="gridcell"][aria-readonly="false"]')
+  await expect(givenCells.first()).toBeVisible()
+  await expect(editableCells.first()).toBeVisible()
+
+  const givenValue = await givenCells.first().textContent()
+  await givenCells.first().press('9')
+  await expect(givenCells.first()).toHaveText(givenValue ?? '')
+
+  await editableCells.first().press('9')
+  await expect(editableCells.first()).toHaveText('9')
+  await editableCells.first().press('Backspace')
+  await expect(editableCells.first()).toHaveText('')
 })
