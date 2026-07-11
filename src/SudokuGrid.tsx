@@ -6,20 +6,20 @@ const BLOCK_SIZE = 3
 function getCellClassName(rowIndex: number, columnIndex: number) {
   const classes = ['sudoku-grid__cell']
 
-  if (rowIndex === 0) {
-    classes.push('sudoku-grid__cell--top-edge')
-  }
-
-  if (columnIndex === 0) {
-    classes.push('sudoku-grid__cell--left-edge')
-  }
-
-  if ((rowIndex + 1) % BLOCK_SIZE === 0) {
+  if ((rowIndex + 1) % BLOCK_SIZE === 0 && rowIndex < GRID_SIZE - 1) {
     classes.push('sudoku-grid__cell--block-bottom')
   }
 
-  if ((columnIndex + 1) % BLOCK_SIZE === 0) {
+  if ((columnIndex + 1) % BLOCK_SIZE === 0 && columnIndex < GRID_SIZE - 1) {
     classes.push('sudoku-grid__cell--block-right')
+  }
+
+  if (rowIndex === GRID_SIZE - 1) {
+    classes.push('sudoku-grid__cell--bottom-edge')
+  }
+
+  if (columnIndex === GRID_SIZE - 1) {
+    classes.push('sudoku-grid__cell--right-edge')
   }
 
   return classes.join(' ')
