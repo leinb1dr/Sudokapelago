@@ -65,4 +65,9 @@ test('clicking a grid cell immediately shows it as selected', async ({ page }) =
   await expect(firstCell).toHaveAttribute('aria-selected', 'false')
   await expect(secondCell).toHaveAttribute('aria-selected', 'true')
   await expect(secondCell).toHaveCSS('background-color', 'rgb(238, 246, 255)')
+
+  await page.keyboard.press('5')
+  await expect(firstCell).toHaveText('')
+  await expect(secondCell).toHaveText('5')
+  await expect(secondCell).toHaveAccessibleName('Cell row 1 column 2 value 5')
 })

@@ -72,7 +72,7 @@ function SudokuGrid() {
                 }}
                 onKeyDown={(event) => {
                   if (VALID_CELL_VALUE_PATTERN.test(event.key)) {
-                    updateCellValue(cellIndex, event.key)
+                    updateCellValue(selectedCellIndex ?? cellIndex, event.key)
                   }
                 }}
                 role="gridcell"
