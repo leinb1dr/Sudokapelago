@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config'
 
 const githubRepositoryName = process.env.GITHUB_REPOSITORY?.split('/')[1]
 const base =
@@ -11,4 +11,8 @@ const base =
 export default defineConfig({
   base,
   plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    include: ['tests/unit/**/*.test.{ts,tsx}'],
+  },
 })
