@@ -1,14 +1,12 @@
-import { useState } from 'react'
 import { Client } from 'archipelago.js'
 import './App.css'
+import SudokuGrid from './SudokuGrid'
 
 // A single shared Archipelago client. It is not connected to any server yet;
 // this simply proves the archipelago.js integration is wired up and ready.
 const archipelagoClient = new Client()
 
 function App() {
-  const [greeted, setGreeted] = useState(false)
-
   const archipelagoReady = archipelagoClient instanceof Client
 
   return (
@@ -22,19 +20,13 @@ function App() {
         </p>
       </header>
 
-      <section className="card">
-        <h2>Hello, world!</h2>
+      <section className="card" aria-labelledby="sudoku-board-title">
+        <h2 id="sudoku-board-title">Empty Sudoku board</h2>
         <p>
-          The TypeScript app is bootstrapped and running. From here we will build
-          configurable Sudoku boards and connect them to Archipelago randomizer
-          sessions.
+          Start from a clean 9x9 grid. Puzzle generation and Archipelago session
+          handling will build on this first board view.
         </p>
-        <button type="button" onClick={() => setGreeted((v) => !v)}>
-          {greeted ? 'Puzzle awaits...' : 'Say hello'}
-        </button>
-        {greeted && (
-          <p className="greeting">Welcome to Sudokapelago!</p>
-        )}
+        <SudokuGrid />
       </section>
 
       <section className="status">

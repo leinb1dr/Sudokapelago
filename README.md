@@ -9,9 +9,9 @@ session using [archipelago.js](https://archipelago.js.org/stable/).
 
 ## Status
 
-Early bootstrap. The app currently renders a hello-world landing page and
+Early bootstrap. The app currently renders an initial empty Sudoku grid and
 initializes the `archipelago.js` client to confirm the integration is wired up.
-Configurable Sudoku boards and full Archipelago session handling are planned.
+Puzzle generation and full Archipelago session handling are planned.
 
 ## Tech stack
 
@@ -74,9 +74,11 @@ index.html          # Vite HTML entry point
 playwright.config.ts # Playwright browser test configuration
 src/
   main.tsx          # React entry point
-  App.tsx           # Hello-world landing page + archipelago.js client
-  App.css           # Component styles
+  App.tsx           # Initial Sudoku page + archipelago.js client
+  App.css           # App page styles
+  SudokuGrid.tsx    # Empty 9x9 Sudoku board component
+  SudokuGrid.css    # Sudoku board styles
   index.css         # Global styles
 tests/
-  app.spec.ts       # Playwright coverage for the current landing page
+  app.spec.ts       # Playwright coverage for the current initial page
 ```
