@@ -19,6 +19,7 @@ Configurable Sudoku boards and full Archipelago session handling are planned.
 - [React](https://react.dev/)
 - [Vite](https://vite.dev/) (dev server / bundler)
 - [oxlint](https://oxc.rs/docs/guide/usage/linter) (linting)
+- [Playwright](https://playwright.dev/) (browser feature testing)
 - [archipelago.js](https://archipelago.js.org/stable/) (Archipelago protocol client)
 
 ## Requirements
@@ -59,14 +60,23 @@ set Pages to use the `GitHub Actions` source.
 | `npm run build` | Type-check (`tsc -b`) and build a production bundle |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run oxlint over the project |
+| `npm run test:e2e` | Run Playwright browser tests |
+
+## Testing expectations
+
+- Every source file should have unit tests covering its behavior.
+- Every user-facing feature should have a Playwright test covering the primary workflow.
 
 ## Project structure
 
 ```
 index.html          # Vite HTML entry point
+playwright.config.ts # Playwright browser test configuration
 src/
   main.tsx          # React entry point
   App.tsx           # Hello-world landing page + archipelago.js client
   App.css           # Component styles
   index.css         # Global styles
+tests/
+  app.spec.ts       # Playwright coverage for the current landing page
 ```
