@@ -9,9 +9,32 @@ session using [archipelago.js](https://archipelago.js.org/stable/).
 
 ## Status
 
-Early bootstrap. The app currently renders an initial empty Sudoku grid and
-initializes the `archipelago.js` client to confirm the integration is wired up.
-Puzzle generation and full Archipelago session handling are planned.
+The app generates and plays Sudoku puzzles that are verified with configurable
+human-solving techniques. The `archipelago.js` client is initialized, while
+full Archipelago session handling is still planned.
+
+## Human-solvable setter
+
+The setter starts with a randomized valid solution, shuffles all 81 cells, and
+tries each clue once. After a clue is removed, a fresh human-technique solve
+must reach the original solution. Failed removals are restored and excluded
+from further attempts.
+
+Techniques run from the selected difficulty down to Easy, in advanced-first
+order. Any placement or candidate elimination restarts the sequence at the
+most advanced available technique.
+
+| Difficulty | Additional techniques |
+| --- | --- |
+| Easy | Cross-hatching, hidden singles, naked singles |
+| Medium | Hidden/naked pairs and triples, locked candidates, pointing pairs/triples |
+| Hard | Y-Wing, X-Wing |
+| Expert | Swordfish |
+
+Each technique is an individual exported function under
+`src/sudoku/techniques/`. Reorder or replace entries in `TECHNIQUE_TIERS`, or
+pass a custom `techniques` array to `solveWithHumanTechniques` and
+`createSudokuPuzzle`, to configure the solving policy.
 
 ## Tech stack
 
@@ -60,6 +83,7 @@ set Pages to use the `GitHub Actions` source.
 | `npm run build` | Type-check (`tsc -b`) and build a production bundle |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run oxlint over the project |
+| `npm test` | Run Vitest unit and component tests |
 | `npm run test:e2e` | Run Playwright browser tests |
 
 ## Testing expectations
@@ -74,11 +98,14 @@ index.html          # Vite HTML entry point
 playwright.config.ts # Playwright browser test configuration
 src/
   main.tsx          # React entry point
-  App.tsx           # Initial Sudoku page + archipelago.js client
+  App.tsx           # Sudoku setter page + archipelago.js client
   App.css           # App page styles
-  SudokuGrid.tsx    # Empty 9x9 Sudoku board component
+  DifficultyPicker.tsx # Human-technique difficulty control
+  SudokuGrid.tsx    # Playable 9x9 Sudoku board component
   SudokuGrid.css    # Sudoku board styles
   index.css         # Global styles
+  sudoku/           # Grid model, generation, setter, and human solver
 tests/
-  app.spec.ts       # Playwright coverage for the current initial page
+  app.spec.ts       # Playwright coverage for generation and play
+  unit/             # Vitest domain and component coverage
 ```
