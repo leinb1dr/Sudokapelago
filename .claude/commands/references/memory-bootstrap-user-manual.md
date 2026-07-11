@@ -4,7 +4,7 @@ For the full specification, see [memory-bootstrap.md](../memory-bootstrap.md).
 
 ## What this command does
 
-`/memory-bootstrap` initializes the full Claude Code memory system for an existing repository.
+`/memory-bootstrap` initializes the full Cursor agent memory system for an existing repository.
 It analyzes the codebase, proposes a file plan, waits for your confirmation, then generates all
 memory layers populated with real project content.
 
@@ -30,7 +30,7 @@ Use it **once** at project start. After that, use `memory-maintainer` for all on
 Step 1  Analyze repo        → reads package.json, README, Vite/TS config, git log, code files, existing memory
 Step 2  Propose file plan   → lists every file to create or skip, with rationale
         ↓ YOU CONFIRM ↓
-Step 3a Generate rules/docs → CLAUDE.md, docs/ai/, .claude/rules/
+Step 3a Generate rules/docs → AGENTS.md, docs/ai/, .claude/rules/
 Step 3b Generate memory-bank → activeContext, progress, systemPatterns (with real content)
 Step 4  Self-audit          → removes filler, fixes routing errors
 Step 5  Human checklist     → what only you can fill in
@@ -62,7 +62,7 @@ over `memory-maintainer`, which only creates empty templates.
 | `progress.md` | Recent milestones from `git log` (last 5–10 significant commits) |
 | `activeContext.md` | Active work from recent branches; known risks from existing docs |
 | `systemPatterns.md` | Patterns confirmed in 2+ files (state flow, components/hooks, integrations, errors) |
-| `.claude/claude-files-registry.md` | All local `CLAUDE.md` files discovered + routing criteria from codebase analysis |
+| `.claude/agents-files-registry.md` | All local `AGENTS.md` files discovered + routing criteria from codebase analysis |
 
 If a section has no grounded content, it is marked `<!-- To be completed -->` — never invented.
 

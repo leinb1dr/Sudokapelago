@@ -241,16 +241,16 @@ ANALYSIS — <name> [<type>]
 [complete findings in the conversation]
 
 Questions, areas to explore further, corrections?
-  → Ask a question                           : Claude explores and responds
-  → "Explore <aspect> further"               : Claude re-runs the relevant phases
-  → "Correct <point>"                        : Claude updates its understanding
+  → Ask a question                           : the Cursor agent explores and responds
+  → "Explore <aspect> further"               : the Cursor agent re-runs the relevant phases
+  → "Correct <point>"                        : the Cursor agent updates its understanding
   → "Show me the end-to-end flow
      for <feature>"                          : behavioural synthesis (see below)
   → "That's good" / "output"                 : proceed to output gate
 ```
 
 **Behavioural synthesis on demand**: on "Show me the end-to-end flow for X",
-Claude synthesises from phases 1-5 already in context and produces:
+The Cursor agent synthesises from phases 1-5 already in context and produces:
 - Entry point (type + trigger)
 - Feature steps with conditions and branches
 - Triggered outputs (features/flows activated on exit + conditions)
@@ -349,7 +349,7 @@ Resume phrase to use at the start of a new conversation:
  Next unit to analyse: <name> [<type>]."
 ```
 
-Claude reads the plan, sees what is already documented in `architecture-map.md`,
+The Cursor agent reads the plan, sees what is already documented in `architecture-map.md`,
 and starts directly on the next unit without redoing the cartography.
 
 ---
@@ -362,7 +362,7 @@ not just rules and patterns. The complete routing table:
 | Detected type | Phase | Destination |
 |---|---|---|
 | Repo-wide invariant | 3 | `.claude/rules/<file>.md` |
-| Subtree-specific invariant | 3 | Local `CLAUDE.md` of the module (via registry) |
+| Subtree-specific invariant | 3 | Local `AGENTS.md` of the module (via registry) |
 | Business policy (analysed mechanism) | 3 | `decision.md` (via `/architecture-document`) |
 | Cross-cutting decision or already-documented mechanism | 3, 4 | `docs/ai/architecture-decisions.md` |
 | Operational constraint | 3 | `docs/ai/known-issues.md` |
@@ -377,7 +377,7 @@ suffixed in brackets:
 | Level | Criterion |
 |-------|-----------|
 | `high` | Extracted from a `throw`/exception, or grep-confirmed in 2+ distinct files, or coverage gap found by grep |
-| `medium` | Consistent observation but Claude's judgement (business terms, heuristic patterns, integration observed on a single unit) |
+| `medium` | Consistent observation but the agent's judgement (business terms, heuristic patterns, integration observed on a single unit) |
 | `low` | `[IMPLICIT]` — suspicion from a comment, naming convention, or indirect evidence |
 
 ```

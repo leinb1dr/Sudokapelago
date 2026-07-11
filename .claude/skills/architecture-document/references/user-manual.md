@@ -41,7 +41,7 @@ docs/ai/architecture-decisions.md → short ADR pointing to decision.md (patch)
 /architecture-document domain-model-enrichment type=subsystem
 /architecture-document command type=bounded-context
 
-# Without type — Claude infers from code structure
+# Without type — the Cursor agent infers from code structure
 /architecture-document generator-pipeline
 /architecture-document
 
@@ -59,7 +59,7 @@ docs/ai/architecture-decisions.md → short ADR pointing to decision.md (patch)
 
 ### Mode A — Conversation only
 The skill extracts all content from the current session.
-Ideal after a long reverse-engineering session with Claude.
+Ideal after a long reverse-engineering session with a Cursor agent.
 
 ### Mode B — Markdown file only
 The skill reads the file and transforms it into the 3-file structure.
@@ -131,7 +131,7 @@ You can exclude sections if some are not relevant for the documentation.
 
 ```
 Phase 1a — Work session (Mode A)
-   └─ Long reverse-engineering conversation with Claude
+   └─ Long reverse-engineering conversation with a Cursor agent
    └─ /architecture-document <name>
 
 Phase 1b — Existing document (Mode B)
@@ -163,7 +163,7 @@ Phase 4 — Rule promotion
 
 Phase 5 — Wiring (based on risk level)
    └─ LOW/MEDIUM: map entry is sufficient
-   └─ HIGH: local CLAUDE.md with @summary.md
+   └─ HIGH: local AGENTS.md with @summary.md
 ```
 
 ## What the skill writes directly
@@ -177,11 +177,11 @@ These files are created or patched in Step 6, without going through PROMOTE-CAND
 | `docs/ai/architecture/<name>/decision.md` | Created — includes mechanism-specific business policies |
 | `docs/ai/architecture-map.md` | Patched (new mechanism entry) |
 | `docs/ai/architecture-decisions.md` | Patched (short ADR) |
-| Root `CLAUDE.md` | Patched **once only** (Bootstrap) — adds `@architecture-map.md` block |
+| Root `AGENTS.md` | Patched **once only** (Bootstrap) — adds `@architecture-map.md` block |
 
-> **Root `CLAUDE.md` is not a PROMOTE-CANDIDATE destination.**
+> **Root `AGENTS.md` is not a PROMOTE-CANDIDATE destination.**
 > Bootstrap writes it directly once at initialization. Repo-wide rules go into
-> `.claude/rules/`, not into `CLAUDE.md`. Putting rules in `CLAUDE.md` bypasses the
+> `.claude/rules/`, not into `AGENTS.md`. Putting rules in `AGENTS.md` bypasses the
 > rules system and bloats the context loaded every session.
 
 ## What the skill lists as PROMOTE-CANDIDATE
@@ -200,7 +200,7 @@ At the end of generation, the skill:
 | Level | Criteria |
 |-------|----------|
 | `high` | Explicit decision or constraint in conversation/doc, or pattern grep-confirmed in 2+ places |
-| `medium` | Inferred from content — consistent but Claude's judgment |
+| `medium` | Inferred from content — consistent but the agent's judgment |
 | `low` | Prospective item (evolution study, not yet implemented), or indirectly deduced |
 
 > **⚠️ Gap 3 — No grep on code**: unlike `codebase-analysis`, this skill generates its
@@ -232,7 +232,7 @@ PROMOTE-CANDIDATE RULES:
 | Type | Destination |
 |------|-------------|
 | Repo-wide invariant | `.claude/rules/` |
-| Subtree-specific invariant | Local `CLAUDE.md` (via registry) |
+| Subtree-specific invariant | Local `AGENTS.md` (via registry) |
 | Cross-cutting decision | `docs/ai/architecture-decisions.md` |
 | Operational constraint | `docs/ai/known-issues.md` |
 | Recurring pattern (2+) | `.claude/memory-bank/systemPatterns.md` |
@@ -244,7 +244,7 @@ PROMOTE-CANDIDATE RULES:
 > — do not duplicate them as PROMOTE-CANDIDATE.
 
 > **Tier 2 — On-demand**: `domain-glossary`, `integration-patterns`, `data-sources` are not
-> @imported. They are listed in root `CLAUDE.md` with their "when to read" — Claude knows
+> @imported. They are listed in root `AGENTS.md` with their "when to read" — Cursor agents know
 > they exist. `memory-maintainer` enforces this and flags any missing file.
 
 Run `/promote-to-memory` after validation to integrate them.
@@ -255,10 +255,10 @@ If the session is closed before: `/promote-to-memory doc=docs/ai/architecture/<n
 ### Level 1 — automatic (done by the skill)
 Entry in `architecture-map.md`. Sufficient for LOW/MEDIUM risk.
 
-### Level 2 — root CLAUDE.md (once only)
-Verify that `@docs/ai/architecture-map.md` is present in `CLAUDE.md`.
+### Level 2 — root AGENTS.md (once only)
+Verify that `@docs/ai/architecture-map.md` is present in `AGENTS.md`.
 
-### Level 3 — local CLAUDE.md (HIGH risk only)
+### Level 3 — local AGENTS.md (HIGH risk only)
 ```markdown
 ## Mechanism: <Name>
 Before any modification, read:
@@ -290,7 +290,7 @@ Use architecture-reviewer. mechanism: <name>. task: <description>
 
 | Mistake | Consequence | Solution |
 |---------|-------------|----------|
-| @importing `full-analysis.md` in CLAUDE.md | Overloaded context | Only import `summary.md` or `architecture-map.md` |
+| @importing `full-analysis.md` in AGENTS.md | Overloaded context | Only import `summary.md` or `architecture-map.md` |
 | Forgetting `/promote-to-memory` after generation | Action rules remain passive | Always run after validation |
 | `summary.md` > 100 lines | Diluted signal, too heavy to import | Prune immediately |
 | Reading the entire doc on a large file | Context overload during generation | Let the skill read section by section |

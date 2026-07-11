@@ -88,7 +88,7 @@ accumulate duplicates.
    → Approval gate → write after confirmation
 
 4. Wiring (if HIGH risk mechanism)
-   → Create local CLAUDE.md with @summary.md
+   → Create local AGENTS.md with @summary.md
 ```
 
 **Do not reverse steps 2 and 3**: validate the files before promoting the rules —

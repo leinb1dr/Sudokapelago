@@ -1,11 +1,11 @@
 ---
 name: memory-maintainer
-description: maintain and improve claude code project memory so it stays concise, consistent, unambiguous, and non-contradictory. use when the user wants to audit, refine, patch, or apply changes to project memory files such as claude.md, local claude.md files, .claude/rules, docs/ai, or .claude/memory-bank. also use when the user wants to promote durable learnings from visible auto-memory, /memory output, or the current conversation into the correct versioned memory layer. also use when the user says "promote this", "remember this", or "remember what we just decided". also use to initialize the memory structure on a new project.
+description: maintain and improve Cursor agent project memory so it stays concise, consistent, unambiguous, and non-contradictory. use when the user wants to audit, refine, patch, or apply changes to project memory files such as AGENTS.md, local AGENTS.md files, .claude/rules, docs/ai, or .claude/memory-bank. also use when the user wants to promote durable learnings from visible auto-memory, /memory output, or the current conversation into the correct versioned memory layer. also use when the user says "promote this", "remember this", or "remember what we just decided". also use to initialize the memory structure on a new project.
 ---
 
 # Memory Maintainer
 
-Maintain the repository's versioned Claude Code memory with a disciplined, low-noise workflow.
+Maintain the repository's versioned Cursor agent memory with a disciplined, low-noise workflow.
 
 ## Inputs
 
@@ -34,8 +34,8 @@ If the user writes free-form requests such as "instead of this memory part..." o
 
 Use this routing model consistently:
 
-- `CLAUDE.md` root → global, durable, prescriptive repo-wide rules
-- local `CLAUDE.md` → directory-specific durable rules tied to that subtree
+- `AGENTS.md` root → global, durable, prescriptive repo-wide rules
+- local `AGENTS.md` → directory-specific durable rules tied to that subtree
 - `.claude/rules/` → specialized reusable rules, especially cross-cutting or task-specific guidance
 - `docs/ai/` → durable explanatory knowledge: architecture, domain, business rules, runbooks, known issues, decisions
 - `.claude/memory-bank/` → evolving project context: active work, completed milestones, recurring patterns
@@ -51,9 +51,9 @@ Do not invent new filenames. Route to files that exist. If the project uses the 
 Promote information only when it is durable and belongs in versioned memory.
 
 Promote to:
-- `CLAUDE.md` when it is a stable instruction about how Claude should act
-- local `CLAUDE.md` when the rule is only true within a subtree or module
-- `.claude/rules/` when it is a reusable specialized rule that should not bloat a `CLAUDE.md`
+- `AGENTS.md` when it is a stable instruction about how Cursor agents should act
+- local `AGENTS.md` when the rule is only true within a subtree or module
+- `.claude/rules/` when it is a reusable specialized rule that should not bloat `AGENTS.md`
 - `docs/ai/known-issues.md` when it is a recurring operational or debugging pitfall
 - `docs/ai/architecture-decisions.md` (or equivalent ADR file) when it is a durable architectural decision or trade-off
 - `docs/ai/` (appropriate existing file) for architecture boundaries, domain knowledge, or runbooks
@@ -85,7 +85,7 @@ When auditing or patching, look for:
 - duplicate rules across files
 - contradictions between root and local rules
 - vague language such as "if needed" or "be careful" without specifics
-- large generic sections that do not change Claude's behavior
+- large generic sections that do not change Cursor agent behavior
 - material that belongs in a different layer
 - missing durable promotions from visible auto-memory observations
 - stale entries in `activeContext.md` (work that appears completed based on git log)
@@ -172,16 +172,16 @@ During every audit, scan 3–5 key service and persistence files and compare the
 
 After any session where a non-obvious implementation pattern is confirmed by the user or observed in multiple places, propose adding it to `systemPatterns.md` with a minimal code example.
 
-## Local CLAUDE.md discovery
+## Local AGENTS.md discovery
 
 At the start of every `audit` or `patch` invocation:
 
-1. **Check for `.claude/claude-files-registry.md`**
+1. **Check for `.claude/agents-files-registry.md`**
    - If absent: flag in Block 2 as missing infrastructure. Do not create it — that is bootstrap's
      responsibility. Propose that the user runs `/memory-bootstrap` or creates it manually.
-   - If present: read it to discover all local `CLAUDE.md` files and their routing criteria.
+   - If present: read it to discover all local `AGENTS.md` files and their routing criteria.
 
-2. **Glob for actual local `CLAUDE.md` files** — all `CLAUDE.md` files in the repo except the root one.
+2. **Glob for actual local `AGENTS.md` files** — all `AGENTS.md` files in the repo except the root one.
 
 3. **Sync registry against filesystem**:
    - File exists on disk but missing from registry → propose adding the path. Do not write routing
@@ -190,15 +190,15 @@ At the start of every `audit` or `patch` invocation:
 
 4. **Use routing criteria when dispatching subtree-specific rules**: when a promotion candidate or
    detected issue applies only to a specific module or directory, match it against the registry
-   criteria to select the correct local `CLAUDE.md` as destination.
+   criteria to select the correct local `AGENTS.md` as destination.
 
 Never write or rewrite routing criteria in the registry — read and use them only.
 
 ## Import hygiene
 
-During every audit/patch, verify that root `CLAUDE.md` enforces the three-tier loading strategy.
+During every audit/patch, verify that root `AGENTS.md` enforces the three-tier loading strategy.
 
-**Tier 1 — Required @imports** (must be present in root `CLAUDE.md`):
+**Tier 1 — Required @imports** (must be present in root `AGENTS.md`):
 - `@.claude/memory-bank/activeContext.md`
 - `@.claude/memory-bank/systemPatterns.md`
 - `@docs/ai/known-issues.md`
@@ -206,19 +206,19 @@ During every audit/patch, verify that root `CLAUDE.md` enforces the three-tier l
 If any @import is missing: propose a patch to add it.
 If the target file does not exist: flag as a bootstrap gap — do not add a broken import.
 
-**Tier 2 — On-demand references** (root `CLAUDE.md` must list these so Claude knows they exist):
+**Tier 2 — On-demand references** (root `AGENTS.md` must list these so Cursor agents know they exist):
 - `.claude/memory-bank/progress.md`
 - `docs/ai/architecture-decisions.md`
 - `docs/ai/domain-glossary.md`
 - `docs/ai/integration-patterns.md`
 - `docs/ai/data-sources.md`
 
-Root `CLAUDE.md` must contain a section listing these files with a short indication of when to read each.
+Root `AGENTS.md` must contain a section listing these files with a short indication of when to read each.
 If the section is absent or any file is unlisted: propose a patch.
 If a listed file does not exist: flag it — do not leave a reference to a missing file.
 
 **Tier 3 — Never imported directly** (heavy architecture docs):
-These files must not appear as @imports in `CLAUDE.md`. They are accessed via the `architecture-reviewer`
+These files must not appear as @imports in `AGENTS.md`. They are accessed via the `architecture-reviewer`
 subagent, routed through `docs/ai/architecture-map.md`.
 If any of them appear as a direct @import: propose removing it.
 

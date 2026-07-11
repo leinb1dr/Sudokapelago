@@ -18,7 +18,7 @@ These files must exist for the command to function correctly. If absent, the ind
 | `.claude/skills/memory-maintainer/references/templates/activeContext.md` | Step 3c | Section structure for `activeContext.md` | Bootstrap invents its own structure → incompatible with memory-maintainer lifecycle |
 | `.claude/skills/memory-maintainer/references/templates/progress.md` | Step 3c | Section structure for `progress.md` | Bootstrap invents its own structure → maintainer may not recognize the format |
 | `.claude/skills/memory-maintainer/references/templates/systemPatterns.md` | Step 3c | Section structure for `systemPatterns.md` | Bootstrap invents its own structure → sections may not match maintainer expectations |
-| `.claude/skills/memory-maintainer/references/templates/claude-files-registry.md` | Step 3b | Canonical structure for the local CLAUDE.md registry | Bootstrap generates a non-standard format → memory-maintainer cannot reliably sync it |
+| `.claude/skills/memory-maintainer/references/templates/agents-files-registry.md` | Step 3b | Canonical structure for the local AGENTS.md registry | Bootstrap generates a non-standard format → memory-maintainer cannot reliably sync it |
 | `.claude/skills/memory-maintainer/references/promotion-matrix.md` | Step 4 | Routing grid for the critical audit | Step 4 falls back to generic checks — audit quality degrades |
 
 ---
@@ -83,7 +83,7 @@ Break condition: if memory-maintainer changes the threshold or the entry format
 
 ```
 Contract:
-  CLAUDE.md / local CLAUDE.md  → prescriptive rules
+  AGENTS.md / local AGENTS.md  → prescriptive rules
   .claude/rules/               → specialized reusable rules
   docs/ai/                     → explanatory knowledge
   .claude/memory-bank/         → evolving project context
@@ -93,20 +93,20 @@ Impact: bootstrap uses this routing in Step 2 (file plan) and Step 4 (audit)
 Break condition: if memory-maintainer reassigns a layer or adds a new one
 ```
 
-### Local CLAUDE.md registry
+### Local AGENTS.md registry
 
 ```
 Contract:
-  File: .claude/claude-files-registry.md
+  File: .claude/agents-files-registry.md
   Structure: markdown table with columns | File | Routes here when |
-  One row per local CLAUDE.md file in the repository.
+  One row per local AGENTS.md file in the repository.
 
   Ownership:
     - bootstrap CREATES and INITIALIZES routing criteria (from Step 1 analysis)
     - memory-maintainer MAINTAINS paths (adds missing, removes stale) but never writes criteria
     - human may update routing criteria manually if the module scope changes
 
-Owner: memory-bootstrap.md § Step 3b + memory-maintainer SKILL.md § Local CLAUDE.md discovery
+Owner: memory-bootstrap.md § Step 3b + memory-maintainer SKILL.md § Local AGENTS.md discovery
 Impact: bootstrap must generate this file for memory-maintainer to route subtree-specific rules
 Break condition: if the file location, table format, or column names change
 ```
@@ -115,12 +115,12 @@ Break condition: if the file location, table format, or column names change
 
 ```
 Contract:
-  Tier 1 — @imports in root CLAUDE.md (always loaded):
+  Tier 1 — @imports in root AGENTS.md (always loaded):
     @.claude/memory-bank/activeContext.md
     @.claude/memory-bank/systemPatterns.md
     @docs/ai/known-issues.md
 
-  Tier 2 — On-demand references listed in root CLAUDE.md (not imported):
+  Tier 2 — On-demand references listed in root AGENTS.md (not imported):
     .claude/memory-bank/progress.md
     docs/ai/architecture-decisions.md
     docs/ai/domain-glossary.md
@@ -133,7 +133,7 @@ Contract:
     any full-analysis or summary architecture file
 
 Owner: memory-maintainer SKILL.md § Import hygiene
-Impact: bootstrap must generate root CLAUDE.md with exactly this structure.
+Impact: bootstrap must generate root AGENTS.md with exactly this structure.
         Tier 1 @imports only added if the file exists at generation time.
         Tier 2 entries only listed if the file exists at generation time.
 Break condition: if memory-maintainer changes the tier file lists or adds/removes a tier
@@ -177,4 +177,4 @@ Before modifying `memory-maintainer`, verify impact on `memory-bootstrap` by che
 5. Did the progress.md table format change? → Update Step 3b population for progress
 6. Did the two-occurrence rule threshold change? → Update Step 1.5 promotion criteria
 7. Did the three-tier loading strategy change (tier file lists, new tier, removed tier)? → Update Step 3a loading strategy block in bootstrap
-8. Did the registry file location, table format, or ownership rules change? → Update Step 3b (registry) in bootstrap and § Local CLAUDE.md discovery in memory-maintainer
+8. Did the registry file location, table format, or ownership rules change? → Update Step 3b (registry) in bootstrap and § Local AGENTS.md discovery in memory-maintainer

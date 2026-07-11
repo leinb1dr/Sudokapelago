@@ -1,13 +1,13 @@
-# Claude Code skills for Sudokapelago
+# Cursor agent skills for Sudokapelago
 
-This directory contains a repo-local copy of the Claude Code skills and commands from `monsefchafik/claude-code-skills`, converted for Sudokapelago.
+This directory contains a repo-local copy of agent skills and commands from `monsefchafik/claude-code-skills`, converted for Sudokapelago and wired for Cursor's `AGENTS.md` convention.
 
 ## Installed layout
 
 - `skills/codebase-analysis/` - structured codebase analysis adapted for TypeScript, React, Vite, CSS, and `archipelago.js`.
 - `skills/architecture-document/` - converts analysis output into `docs/ai/architecture/*` documentation.
 - `skills/architecture-reviewer/` - isolated architecture-doc reviewer.
-- `skills/memory-maintainer/` - audits and maintains Claude memory layers.
+- `skills/memory-maintainer/` - audits and maintains Cursor agent memory layers.
 - `commands/memory-bootstrap.md` - initializes memory files from this repository's actual structure.
 - `commands/promote-to-memory.md` - promotes durable findings from a session or analysis file.
 

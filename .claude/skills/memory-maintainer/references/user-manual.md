@@ -89,17 +89,17 @@ Apply only P1 and P4.
 
 The skill updates the plan first, then waits for explicit apply instructions.
 
-## Local CLAUDE.md files — discovery and routing
+## Local AGENTS.md files — discovery and routing
 
 At every `audit` or `patch` invocation, the skill automatically:
 
-1. Reads `.claude/claude-files-registry.md` (if present) to discover local `CLAUDE.md` files
-2. Globs for actual local `CLAUDE.md` files and syncs against the registry:
+1. Reads `.claude/agents-files-registry.md` (if present) to discover local `AGENTS.md` files
+2. Globs for actual local `AGENTS.md` files and syncs against the registry:
    - File exists but not in registry → flagged in Block 2, path addition proposed
    - Registry entry references a missing file → removal proposed
-3. Uses the routing criteria in the registry to dispatch subtree-specific rules to the correct local `CLAUDE.md`
+3. Uses the routing criteria in the registry to dispatch subtree-specific rules to the correct local `AGENTS.md`
 
-**If the registry is absent**: the skill flags it in Block 2 and cannot route to local `CLAUDE.md` files reliably. Run `/memory-bootstrap` to create it, or create it manually using the format in `.claude/claude-files-registry.md`.
+**If the registry is absent**: the skill flags it in Block 2 and cannot route to local `AGENTS.md` files reliably. Run `/memory-bootstrap` to create it, or create it manually using the format in `.claude/agents-files-registry.md`.
 
 The skill never writes routing criteria — only `memory-bootstrap` or a human initializes those.
 
@@ -109,7 +109,7 @@ The skill has write access to all versioned memory files. The bottleneck is **de
 access**. These files can drift silently — the skill will only correct them if the stale content
 surfaces in the current conversation or auto-memory:
 
-- `CLAUDE.md` (root) and `.claude/rules/*.md` — rules referencing renamed or deleted code
+- `AGENTS.md` (root) and `.claude/rules/*.md` — rules referencing renamed or deleted code
 - `docs/ai/known-issues.md` — issues documented as active but already fixed
 - `docs/ai/architecture-decisions.md`, `domain-glossary.md`, `integration-patterns.md`, `data-sources.md` — any content that changed without going through a session
 

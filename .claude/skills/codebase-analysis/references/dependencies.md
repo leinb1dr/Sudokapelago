@@ -94,7 +94,7 @@ only to confirm their existence.
 | `docs/ai/integration-patterns.md` | Destination for integration patterns identified in Phase 4 | Same |
 | `docs/ai/data-sources.md` | Destination for data flows identified in Phase 4 | Same |
 | `docs/ai/architecture-decisions.md` | Destination for cross-cutting decisions or already-documented mechanism | Same |
-| `.claude/claude-files-registry.md` | Routing to local `CLAUDE.md` for subtree-specific invariants | Local CLAUDE.md candidates not routed — fallback to `.claude/rules/` |
+| `.claude/agents-files-registry.md` | Routing to local `AGENTS.md` for subtree-specific invariants | Local AGENTS.md candidates not routed — fallback to `.claude/rules/` |
 
 These files are created by `/memory-bootstrap`. If absent: suggest to the user
 to run `/memory-bootstrap` or create them manually before re-running `/promote-to-memory`.

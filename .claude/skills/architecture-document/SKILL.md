@@ -47,7 +47,7 @@ Determine active sources from arguments and conversation. See Step 0 below.
 If it does **not** exist:
 1. Create `docs/ai/architecture-map.md` using the canonical structure defined in the
    `## Output formats` section below
-2. Check whether root `CLAUDE.md` contains both the `@import` and the usage guidance block
+2. Check whether root `AGENTS.md` contains both the `@import` and the usage guidance block
    for `architecture-map.md`. If absent, add the following block:
 
 ```markdown
@@ -68,7 +68,7 @@ Specification: `.claude/skills/architecture-reviewer/SKILL.md`
 Never read `full-analysis.md` directly in the main thread.
 ```
 
-3. Include both the file creation and the `CLAUDE.md` patch in the Step 5 approval output,
+3. Include both the file creation and the `AGENTS.md` patch in the Step 5 approval output,
    labeled **Bootstrap** and listed before the mechanism patches
 
 If it already exists: proceed normally — patch it with the new mechanism entry only.
@@ -237,7 +237,7 @@ Then scan the extracted content for additional items not already in the list:
 | What to detect | Destination | Typical confidence |
 |----------------|-------------|-------------------|
 | Mandatory implementation constraint (always/never/must/forbidden) | `.claude/rules/` | `high` if stated explicitly |
-| Subtree-specific invariant (single module only) | Local `CLAUDE.md` (via registry) | `high` if stated explicitly |
+| Subtree-specific invariant (single module only) | Local `AGENTS.md` (via registry) | `high` if stated explicitly |
 | Cross-cutting architectural decision (affects 2+ units) | `docs/ai/architecture-decisions.md` | `medium` |
 | Operational constraint (DB, infra, external system, known limit) | `docs/ai/known-issues.md` | `high` if explicit, `medium` otherwise |
 | Recurring code pattern (2+ locations mentioned in doc/conversation) | `.claude/memory-bank/systemPatterns.md` | `medium` — no grep available |
@@ -324,7 +324,7 @@ Recommended next steps:
 2. Run /promote-to-memory to promote PROMOTE-CANDIDATE rules
    or /promote-to-memory doc=docs/ai/architecture/<mechanism-name>/full-analysis.md
    (if in a new session)
-3. Consider a local CLAUDE.md in the relevant module (see user-manual)
+3. Consider a local AGENTS.md in the relevant module (see user-manual)
 ```
 
 ---

@@ -40,16 +40,16 @@ benefit and pollutes the context.
 
 ### How to invoke it
 
-Tell Claude (in natural language):
+Tell the Cursor agent (in natural language):
 
 ```
 Use architecture-reviewer. mechanism: generator-pipeline. task: Add a new source type without breaking existing validation.
 ```
 
-Claude recognizes the skill via its system description ("Invoke via the Agent tool"), loads
+The Cursor agent recognizes the skill via its system description ("Invoke via the Agent tool"), loads
 `SKILL.md` via the Skill tool, then launches the subagent with the Agent tool.
 
-### How Claude knows it needs a subagent
+### How the Cursor agent knows it needs a subagent
 
 Reliability relies on three cumulative signals:
 
@@ -57,9 +57,9 @@ Reliability relies on three cumulative signals:
 |--------|---------|-------|
 | Skill description (system-reminder) | "Invoke via the Agent tool" | Every session |
 | `SKILL.md` section "How to invoke" | Shows the Agent tool explicitly | Every invocation |
-| Root `CLAUDE.md` | "ALWAYS via Agent tool — never read full-analysis.md directly" | Every session |
+| Root `AGENTS.md` | "ALWAYS via Agent tool — never read full-analysis.md directly" | Every session |
 
-**If the request is vague** ("look at the docs for X"), Claude may read files directly
+**If the request is vague** ("look at the docs for X"), the Cursor agent may read files directly
 without spawning a subagent. Always use the canonical phrasing to guarantee isolation:
 
 ```
@@ -111,7 +111,7 @@ Recommendation: run a reverse-engineering session then
 execute `/architecture-document <mechanism>` before continuing.
 ```
 
-In that case: stop, analyze the mechanism with Claude, then
+In that case: stop, analyze the mechanism with the Cursor agent, then
 run `/architecture-document` before the implementation task.
 
 ## Typical workflow with the reviewer
@@ -123,13 +123,13 @@ run `/architecture-document` before the implementation task.
    "Use architecture-reviewer for generator-pipeline.
     Task: [precise description]"
 
-3. Claude invokes the subagent
+3. The Cursor agent invokes the subagent
    → isolated context, no thread pollution
 
 4. The reviewer returns its recommendation (20 lines)
 
 5. You continue implementation with this targeted context
-   → Claude knows the constraints without having loaded 1500 lines
+   → the Cursor agent knows the constraints without having loaded 1500 lines
 
 6. If implementation reveals new insights:
    → /promote-to-memory to capture them

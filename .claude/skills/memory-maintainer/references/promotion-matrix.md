@@ -2,9 +2,9 @@
 
 Use this matrix when deciding where information belongs.
 
-## Stable instruction about Claude behavior
+## Stable instruction about Cursor agent behavior
 
-**Destination**: `CLAUDE.md` (root) or local `CLAUDE.md` (subtree)
+**Destination**: `AGENTS.md` (root) or local `AGENTS.md` (subtree)
 
 Examples:
 - "prefer minimal local changes"
@@ -105,7 +105,7 @@ Examples that usually do not qualify:
 Promote when the item is:
 - reusable across multiple future tasks
 - stable enough to survive multiple sprints
-- likely to change Claude's future behavior
+- likely to change Cursor agent behavior
 - better stored in versioned memory than repeated in chat
 
 Do not promote when the item is:

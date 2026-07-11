@@ -1,4 +1,4 @@
-# Local CLAUDE.md Registry
+# Local AGENTS.md Registry
 
 > **Owner**: Initialized by `memory-bootstrap`, maintained by `memory-maintainer`.
 > - `memory-bootstrap` creates this file and writes routing criteria from codebase analysis.
@@ -7,5 +7,4 @@
 
 | File | Routes here when |
 |------|-----------------|
-
-No local `CLAUDE.md` files exist yet. Add rows only when a subtree-specific `CLAUDE.md` is created.
+| `path/to/local/AGENTS.md` | Rule applies only to [specific module or responsibility - distinguish from root AGENTS.md and .claude/rules/] |

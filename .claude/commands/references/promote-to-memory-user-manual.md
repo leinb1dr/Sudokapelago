@@ -105,7 +105,7 @@ current conversation.
 4. Approval gate → "yes" / "no" / "select 1,3"
 
 5. Wiring (if HIGH risk mechanism)
-   → Create local CLAUDE.md with @summary.md
+   → Create local AGENTS.md with @summary.md
 ```
 
 ## Typical workflow after `/architecture-document` (later session)

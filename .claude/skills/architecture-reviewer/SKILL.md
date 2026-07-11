@@ -110,7 +110,7 @@ Structure:
 
 ## How to invoke this subagent
 
-From the main conversation, the developer or Claude uses the Agent tool:
+From the main conversation, the developer or Cursor agent uses the Agent tool:
 
 ```
 Agent tool:

@@ -19,7 +19,7 @@ Never writes to project memory autonomously.
 
 - `doc=<path>` (optional): path to an existing analysis file to resume from.
   - The file is read as the current state of the analysis.
-  - Claude presents a summary of what is already known and continues from there.
+  - The Cursor agent presents a summary of what is already known and continues from there.
   - Output gate offers to update this same file (not create a new one).
   - Typical use: refine an analysis exported in a previous session.
 - `output=` (optional): pre-select output mode at invocation time
@@ -246,7 +246,7 @@ during Phase 1 = signal that we are already in Phase 2.
 **Rule 3 — Safety net: 70% context threshold**
 - If context > 70% (`/context`): export the partial analysis (option 2)
   with a dense and structured file, continue with `doc=` in a new session
-- The exported file must be self-contained — readable by Claude without re-reading the code,
+- The exported file must be self-contained — readable by Cursor agents without re-reading the code,
   otherwise the next session restarts with the same context problem
 - Propose a unit split only if two functionally independent responsibilities
   are identifiable — never based on size or line count
@@ -279,7 +279,7 @@ rg -n "export (default )?(function|const|class|interface|type)|function [A-Z]|co
 ```
 
 **1.5 PATTERN** — interpretation of 1.4, no dedicated command
-- If CLAUDE.md documents the global pattern → confirm it, identify local deviations
+- If AGENTS.md documents the global pattern → confirm it, identify local deviations
 - Local pattern (Template Method, Strategy, etc.) recognized by reading 1.4
 
 **Mandatory deliverable** before moving to Phase 2:
@@ -409,7 +409,7 @@ Document as: `[IMPLICIT] <description> — suspected from <evidence>`
 | Type | Description | Destination |
 |------|-------------|-------------|
 | Invariant (repo-wide) | Always true, never changes, applies to the whole repo | `.claude/rules/` |
-| Invariant (subtree-specific) | Always true, but applies to one module only | Local `CLAUDE.md` (via registry) |
+| Invariant (subtree-specific) | Always true, but applies to one module only | Local `AGENTS.md` (via registry) |
 | Business policy (mechanism-specific) | Business decision tied to the mechanism being analyzed | `decision.md` |
 | Business policy (cross-cutting or mechanism already documented) | Architectural decision or ADR | `docs/ai/architecture-decisions.md` |
 | Operational constraint | Imposed by DB, infra, or external system | `docs/ai/known-issues.md` or `summary.md` |
@@ -422,7 +422,7 @@ Apply the classification to every rule. It determines directly where it goes as 
 | Level | Criteria |
 |-------|----------|
 | `high` | Extracted from a throw/exception statement, OR grep-confirmed in 2+ distinct files, OR coverage gap found by grep |
-| `medium` | Observed consistently but based on Claude's judgment (domain terms, heuristic patterns, single-unit integration) |
+| `medium` | Observed consistently but based on the agent's judgment (domain terms, heuristic patterns, single-unit integration) |
 | `low` | `[IMPLICIT]` — suspected from a comment, naming convention, or indirect evidence; not explicitly stated in code |
 
 Always append the confidence to every PROMOTE-CANDIDATE entry:
@@ -669,10 +669,10 @@ ANALYSIS — <name> [<type>]
 [full findings presented in conversation]
 
 Questions, areas to deepen, corrections?
-  → Ask a question                       : Claude explores and answers
-  → "Deep-dive <aspect>"                 : Claude identifies which phase covers the aspect,
+  → Ask a question                       : the Cursor agent explores and answers
+  → "Deep-dive <aspect>"                 : the Cursor agent identifies which phase covers the aspect,
                                            re-runs that phase only
-  → "Correct <point>"                    : Claude updates its understanding
+  → "Correct <point>"                    : the Cursor agent updates its understanding
   → "Show me the end-to-end flow
      for <feature>"                      : behavioral synthesis (see below)
   → "Show me the contract for
@@ -796,7 +796,7 @@ Livrables :
 
 PROMOTE-CANDIDATEs : <X total>
   - "<item>"  → .claude/rules/<file>.md                [high — extracted from throw]
-  - "<item>"  → src/.../SomeModule/CLAUDE.md           [high — grep-confirmed]
+  - "<item>"  → src/.../SomeModule/AGENTS.md           [high — grep-confirmed]
   - "<item>"  → .claude/memory-bank/systemPatterns.md  [high — confirmed in N files]
   - "<item>"  → docs/ai/domain-glossary.md             [medium — appears consistently]
   - "<item>"  → docs/ai/integration-patterns.md        [medium — observed in this unit]

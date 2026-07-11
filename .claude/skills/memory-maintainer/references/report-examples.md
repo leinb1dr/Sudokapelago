@@ -3,12 +3,12 @@
 ## Example audit response
 
 ### Block 1 - Current memory state
-- `CLAUDE.md` is concise and prescriptive.
+- `AGENTS.md` is concise and prescriptive.
 - `docs/ai/business-rules.md` contains two solid invariants.
 - `.claude/memory-bank/activeContext.md` is stale and still references a finished migration.
 
 ### Block 2 - Problems detected
-- Duplicate guidance about minimal changes appears in both `CLAUDE.md` and `.claude/rules/backend.md`.
+- Duplicate guidance about minimal changes appears in both `AGENTS.md` and `.claude/rules/backend.md`.
 - `docs/ai/known-issues.md` contains one one-off incident that should be removed.
 - Visible auto-memory mentions the actual integration-test command, but that knowledge has not been promoted into `docs/ai/runbook-dev.md`.
 

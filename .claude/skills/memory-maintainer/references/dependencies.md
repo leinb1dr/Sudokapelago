@@ -15,7 +15,7 @@ These files must exist for the skill to function correctly. If absent, the indic
 | `references/templates/activeContext.md` | Bootstrap behavior | Structure reference when creating missing memory-bank file | Skill invents its own structure → incompatible with bootstrap output |
 | `references/templates/progress.md` | Bootstrap behavior | Structure reference when creating missing memory-bank file | Same |
 | `references/templates/systemPatterns.md` | Bootstrap behavior | Structure reference when creating missing memory-bank file | Same |
-| `references/templates/claude-files-registry.md` | Local CLAUDE.md discovery | Canonical structure reference for auditing the registry format | Cannot detect format drift in the registry |
+| `references/templates/agents-files-registry.md` | Local AGENTS.md discovery | Canonical structure reference for auditing the registry format | Cannot detect format drift in the registry |
 | `references/promotion-matrix.md` | Routing decisions | Routing decision table by information type | Routing falls back to generic heuristics — quality degrades |
 
 ---
@@ -26,8 +26,8 @@ These files improve skill behavior when present. Absence degrades specific capab
 
 | File | Used in | Purpose | Degradation if absent |
 |------|---------|---------|----------------------|
-| `.claude/claude-files-registry.md` | Local CLAUDE.md discovery | Discover local `CLAUDE.md` files and routing criteria | Cannot route subtree-specific rules to local `CLAUDE.md` files; flags absence in Block 2 |
-| `CLAUDE.md` (root) | Import hygiene | Verify Tier 1 @imports and Tier 2 on-demand references are present | Import hygiene check skipped |
+| `.claude/agents-files-registry.md` | Local AGENTS.md discovery | Discover local `AGENTS.md` files and routing criteria | Cannot route subtree-specific rules to local `AGENTS.md` files; flags absence in Block 2 |
+| `AGENTS.md` (root) | Import hygiene | Verify Tier 1 @imports and Tier 2 on-demand references are present | Import hygiene check skipped |
 
 ---
 
@@ -36,11 +36,11 @@ These files improve skill behavior when present. Absence degrades specific capab
 These are conventions defined or initialized by other tools that `memory-maintainer` must respect.
 A change in any of these silently breaks skill behavior.
 
-### Local CLAUDE.md registry format
+### Local AGENTS.md registry format
 
 ```
 Contract:
-  File: .claude/claude-files-registry.md
+  File: .claude/agents-files-registry.md
   Structure: markdown table | File | Routes here when |
   Owner: memory-bootstrap (creates and initializes routing criteria)
   memory-maintainer role: sync paths only — never write routing criteria
@@ -52,15 +52,15 @@ Break condition: if the file location or table column names change
 
 ```
 Contract:
-  Tier 1 — @imports in root CLAUDE.md:
+  Tier 1 — @imports in root AGENTS.md:
     @.claude/memory-bank/activeContext.md
     @.claude/memory-bank/systemPatterns.md
     @docs/ai/known-issues.md
 
-  Tier 2 — On-demand references listed in root CLAUDE.md (not imported)
+  Tier 2 — On-demand references listed in root AGENTS.md (not imported)
   Tier 3 — Never imported directly (architecture docs via architecture-reviewer)
 
-Owner: memory-bootstrap (initializes in root CLAUDE.md) + memory-maintainer (enforces via import hygiene)
+Owner: memory-bootstrap (initializes in root AGENTS.md) + memory-maintainer (enforces via import hygiene)
 Break condition: if tier file lists change → update § Import hygiene in SKILL.md
 ```
 
@@ -100,7 +100,7 @@ Break condition: if the size limit changes → update the lifecycle check
 
 Before modifying contracts that `memory-maintainer` depends on, verify impact:
 
-1. Did the registry file location or column format change? → Update § Local CLAUDE.md discovery in SKILL.md
+1. Did the registry file location or column format change? → Update § Local AGENTS.md discovery in SKILL.md
 2. Did the three-tier loading strategy change? → Update § Import hygiene in SKILL.md
 3. Did the memory-bank standard file set change? → Update § Bootstrap behavior in SKILL.md
 4. Did the activeContext size constraint change? → Update § activeContext lifecycle in SKILL.md
