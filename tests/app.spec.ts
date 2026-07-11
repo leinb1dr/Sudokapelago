@@ -47,3 +47,26 @@ test('grid cells accept only digits 1 through 9 from the keyboard', async ({ pag
   await expect(firstCell).toHaveText('9')
   await expect(firstCell).toHaveAccessibleName('Cell row 1 column 1 value 9')
 })
+
+test('clicking a grid cell immediately shows it as selected', async ({ page }) => {
+  await page.goto('/')
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
+  const cells = grid.getByRole('gridcell')
+  const firstCell = cells.first()
+  const secondCell = cells.nth(1)
+
+  await firstCell.click()
+  await expect(firstCell).toHaveAttribute('aria-selected', 'true')
+  await expect(firstCell).toHaveCSS('background-color', 'rgb(219, 234, 254)')
+
+  await secondCell.click()
+  await expect(firstCell).toHaveAttribute('aria-selected', 'false')
+  await expect(secondCell).toHaveAttribute('aria-selected', 'true')
+  await expect(secondCell).toHaveCSS('background-color', 'rgb(219, 234, 254)')
+
+  await page.keyboard.press('5')
+  await expect(firstCell).toHaveText('')
+  await expect(secondCell).toHaveText('5')
+  await expect(secondCell).toHaveAccessibleName('Cell row 1 column 2 value 5')
+})

@@ -6,8 +6,12 @@ const BLOCK_SIZE = 3
 const CELL_COUNT = GRID_SIZE * GRID_SIZE
 const VALID_CELL_VALUE_PATTERN = /^[1-9]$/
 
-function getCellClassName(rowIndex: number, columnIndex: number) {
+function getCellClassName(rowIndex: number, columnIndex: number, isSelected: boolean) {
   const classes = ['sudoku-grid__cell']
+
+  if (isSelected) {
+    classes.push('sudoku-grid__cell--selected')
+  }
 
   if ((rowIndex + 1) % BLOCK_SIZE === 0 && rowIndex < GRID_SIZE - 1) {
     classes.push('sudoku-grid__cell--block-bottom')
@@ -30,6 +34,7 @@ function getCellClassName(rowIndex: number, columnIndex: number) {
 
 function SudokuGrid() {
   const [cellValues, setCellValues] = useState(() => Array<string>(CELL_COUNT).fill(''))
+  const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(null)
 
   function updateCellValue(cellIndex: number, value: string) {
     setCellValues((currentCellValues) =>
@@ -47,6 +52,7 @@ function SudokuGrid() {
             const cellIndex = rowIndex * GRID_SIZE + columnIndex
             const cellValue = cellValues[cellIndex]
             const cellDescription = `row ${rowIndex + 1} column ${columnIndex + 1}`
+            const isSelected = selectedCellIndex === cellIndex
 
             return (
               <div
@@ -55,11 +61,18 @@ function SudokuGrid() {
                     ? `Cell ${cellDescription} value ${cellValue}`
                     : `Empty cell ${cellDescription}`
                 }
-                className={getCellClassName(rowIndex, columnIndex)}
+                aria-selected={isSelected}
+                className={getCellClassName(rowIndex, columnIndex, isSelected)}
                 key={`${rowIndex}-${columnIndex}`}
+                onClick={() => {
+                  setSelectedCellIndex(cellIndex)
+                }}
+                onFocus={() => {
+                  setSelectedCellIndex(cellIndex)
+                }}
                 onKeyDown={(event) => {
                   if (VALID_CELL_VALUE_PATTERN.test(event.key)) {
-                    updateCellValue(cellIndex, event.key)
+                    updateCellValue(selectedCellIndex ?? cellIndex, event.key)
                   }
                 }}
                 role="gridcell"
