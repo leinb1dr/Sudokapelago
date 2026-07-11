@@ -42,6 +42,15 @@ npm run dev
 
 Then open the URL printed in the terminal (defaults to http://localhost:5173).
 
+## GitHub Pages hosting
+
+The app is configured to deploy to GitHub Pages at
+https://leinb1dr.github.io/Sudokapelago/.
+
+Deployment runs through the `Deploy to GitHub Pages` workflow on every push to
+`main`, or manually from the GitHub Actions tab. In the repository settings,
+set Pages to use the `GitHub Actions` source.
+
 ## Scripts
 
 | Command | Description |
