@@ -1,4 +1,5 @@
-import { solverStateIsSolved, createSolverState } from './solverState'
+import { solverStateIsSolved, cloneSolverState, createSolverState } from './solverState'
+import { buildDetailsFromDiff } from './stepDetails'
 import { getTechniquesForDifficulty } from './techniques'
 import type {
   Board,
@@ -54,6 +55,7 @@ export function solveWithHumanTechniques(
     let changed = false
 
     for (const technique of techniques) {
+      const snapshot = cloneSolverState(state)
       const techniqueResult = technique.apply(state)
 
       if (state.contradiction) {
@@ -66,7 +68,12 @@ export function solveWithHumanTechniques(
 
       steps.push({
         technique: technique.name,
-        ...techniqueResult,
+        changed: techniqueResult.changed,
+        placements: techniqueResult.placements,
+        eliminations: techniqueResult.eliminations,
+        details:
+          techniqueResult.details ??
+          buildDetailsFromDiff(snapshot, state, technique.name),
       })
       changed = true
       break

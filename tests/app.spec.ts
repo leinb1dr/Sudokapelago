@@ -103,3 +103,21 @@ test('generates a playable puzzle with locked givens at the selected difficulty'
   await editableCells.first().press('Backspace')
   await expect(editableCells.first()).toHaveText('')
 })
+
+test('debug solve logs human technique steps to the console', async ({ page }) => {
+  const consoleMessages: string[] = []
+  page.on('console', (message) => {
+    consoleMessages.push(message.text())
+  })
+
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Generate easy puzzle' }).click()
+  await page.getByRole('button', { name: 'Debug solve with easy techniques' }).click()
+
+  await expect.poll(() =>
+    consoleMessages.some((message) => message.includes('[Sudokapelago] Human solve')),
+  ).toBe(true)
+  await expect.poll(() =>
+    consoleMessages.some((message) => /Step 1: (Cross Hatch|Hidden Single|Naked Single):/.test(message)),
+  ).toBe(true)
+})

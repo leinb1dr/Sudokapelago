@@ -2,6 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from '../../src/App'
+import { solveWithHumanTechniques } from '../../src/sudoku/humanSolver'
 import { createSudokuPuzzle } from '../../src/sudoku/setter'
 import type { CellValue } from '../../src/sudoku/types'
 
@@ -12,6 +13,14 @@ vi.mock('archipelago.js', () => ({
 vi.mock('../../src/sudoku/setter', () => ({
   createSudokuPuzzle: vi.fn(),
 }))
+
+vi.mock('../../src/sudoku/humanSolver', async () => {
+  const actual = await vi.importActual('../../src/sudoku/humanSolver')
+  return {
+    ...actual,
+    solveWithHumanTechniques: vi.fn(),
+  }
+})
 
 beforeEach(() => {
   vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
@@ -32,6 +41,25 @@ beforeEach(() => {
       solveSteps: 1,
     })),
     clues: 1,
+  })
+
+  vi.mocked(solveWithHumanTechniques).mockReturnValue({
+    solved: true,
+    board: puzzle,
+    reason: 'solved',
+    steps: [
+      {
+        technique: 'naked-single',
+        changed: true,
+        placements: 1,
+        eliminations: 0,
+        details: {
+          summary: 'Naked Single: r1 c2 set 4',
+          reasoning: ['Only option left is 4.'],
+          actions: [{ type: 'placement', cell: 1, digit: 4 }],
+        },
+      },
+    ],
   })
 })
 
@@ -59,5 +87,30 @@ describe('App', () => {
     expect(
       screen.getAllByRole('gridcell')[0].getAttribute('aria-readonly'),
     ).toBe('true')
+  })
+
+  it('runs the difficulty solver and logs detailed steps to the console', async () => {
+    const user = userEvent.setup()
+    const groupSpy = vi.spyOn(console, 'group').mockImplementation(() => {})
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const groupEndSpy = vi.spyOn(console, 'groupEnd').mockImplementation(() => {})
+
+    render(<App />)
+
+    await user.click(
+      screen.getByRole('button', { name: 'Debug solve with easy techniques' }),
+    )
+
+    expect(solveWithHumanTechniques).toHaveBeenCalledWith(
+      expect.any(Array),
+      { difficulty: 'easy' },
+    )
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Naked Single: r1 c2 set 4'),
+    )
+
+    groupSpy.mockRestore()
+    logSpy.mockRestore()
+    groupEndSpy.mockRestore()
   })
 })
