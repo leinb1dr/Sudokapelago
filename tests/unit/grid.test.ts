@@ -13,6 +13,7 @@ import {
   isSolvedBoard,
   isValidBoard,
   maskToDigits,
+  moveCellIndex,
 } from '../../src/sudoku/grid'
 
 const SOLUTION =
@@ -25,6 +26,16 @@ describe('Sudoku grid primitives', () => {
     expect(BOXES).toHaveLength(9)
     expect(ALL_UNITS).toHaveLength(27)
     expect(PEERS.every((peers) => peers.length === 20)).toBe(true)
+  })
+
+  it('moves cell indices within grid bounds', () => {
+    expect(moveCellIndex(0, -1, 0)).toBe(0)
+    expect(moveCellIndex(0, 0, -1)).toBe(0)
+    expect(moveCellIndex(0, 1, 1)).toBe(10)
+    expect(moveCellIndex(80, 1, 0)).toBe(80)
+    expect(moveCellIndex(80, 0, 1)).toBe(80)
+    expect(moveCellIndex(40, -1, 0)).toBe(31)
+    expect(moveCellIndex(4, 0, 1)).toBe(5)
   })
 
   it('validates complete, partial, malformed, and duplicate boards', () => {

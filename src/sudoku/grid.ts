@@ -59,6 +59,22 @@ export function getColumn(cell: number): number {
   return cell % GRID_SIZE
 }
 
+export function moveCellIndex(
+  cellIndex: number,
+  deltaRow: number,
+  deltaColumn: number,
+): number {
+  const row = Math.min(
+    GRID_SIZE - 1,
+    Math.max(0, getRow(cellIndex) + deltaRow),
+  )
+  const column = Math.min(
+    GRID_SIZE - 1,
+    Math.max(0, getColumn(cellIndex) + deltaColumn),
+  )
+  return row * GRID_SIZE + column
+}
+
 export function getBox(cell: number): number {
   return (
     Math.floor(getRow(cell) / BOX_SIZE) * BOX_SIZE +

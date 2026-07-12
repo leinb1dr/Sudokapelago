@@ -61,4 +61,66 @@ describe('SudokuGrid', () => {
     expect(cells[0].textContent).toBe('')
     expect(cells[1].textContent).toBe('7')
   })
+
+  it('moves selection with arrow keys and clamps at grid edges', async () => {
+    const puzzle = Array<CellValue>(81).fill(0)
+    const user = userEvent.setup()
+    render(<ControlledSudokuGrid puzzle={puzzle} />)
+
+    const cells = screen.getAllByRole('gridcell')
+
+    await user.click(cells[0])
+    expect(cells[0].getAttribute('aria-selected')).toBe('true')
+
+    await user.keyboard('{ArrowRight}')
+    expect(document.activeElement).toBe(cells[1])
+    expect(cells[1].getAttribute('aria-selected')).toBe('true')
+
+    await user.keyboard('{ArrowDown}')
+    expect(document.activeElement).toBe(cells[10])
+    expect(cells[10].getAttribute('aria-selected')).toBe('true')
+
+    await user.keyboard('{ArrowLeft}')
+    expect(document.activeElement).toBe(cells[9])
+
+    await user.click(cells[0])
+    await user.keyboard('{ArrowUp}')
+    expect(document.activeElement).toBe(cells[0])
+    await user.keyboard('{ArrowLeft}')
+    expect(document.activeElement).toBe(cells[0])
+  })
+
+  it('moves selection with WASD keys', async () => {
+    const puzzle = Array<CellValue>(81).fill(0)
+    const user = userEvent.setup()
+    render(<ControlledSudokuGrid puzzle={puzzle} />)
+
+    const cells = screen.getAllByRole('gridcell')
+
+    await user.click(cells[40])
+    await user.keyboard('d')
+    expect(document.activeElement).toBe(cells[41])
+    expect(cells[41].getAttribute('aria-selected')).toBe('true')
+
+    await user.keyboard('s')
+    expect(document.activeElement).toBe(cells[50])
+
+    await user.keyboard('a')
+    expect(document.activeElement).toBe(cells[49])
+
+    await user.keyboard('w')
+    expect(document.activeElement).toBe(cells[40])
+  })
+
+  it('enters values in the cell reached by keyboard navigation', async () => {
+    const puzzle = Array<CellValue>(81).fill(0)
+    const user = userEvent.setup()
+    render(<ControlledSudokuGrid puzzle={puzzle} />)
+
+    const cells = screen.getAllByRole('gridcell')
+
+    await user.click(cells[0])
+    await user.keyboard('{ArrowRight}7')
+    expect(cells[1].textContent).toBe('7')
+  })
 })

@@ -76,6 +76,37 @@ test('clicking a grid cell immediately shows it as selected', async ({ page }) =
   await expect(secondCell).toHaveAccessibleName('Cell row 1 column 2 value 5')
 })
 
+test('arrow and WASD keys move selection around the grid', async ({ page }) => {
+  await page.goto('/')
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
+  const cells = grid.getByRole('gridcell')
+  const startCell = cells.nth(40)
+
+  await startCell.click()
+  await expect(startCell).toHaveAttribute('aria-selected', 'true')
+
+  await page.keyboard.press('ArrowRight')
+  const rightCell = cells.nth(41)
+  await expect(rightCell).toHaveAttribute('aria-selected', 'true')
+  await expect(startCell).toHaveAttribute('aria-selected', 'false')
+
+  await page.keyboard.press('ArrowDown')
+  const downCell = cells.nth(50)
+  await expect(downCell).toHaveAttribute('aria-selected', 'true')
+
+  await page.keyboard.press('a')
+  const leftCell = cells.nth(49)
+  await expect(leftCell).toHaveAttribute('aria-selected', 'true')
+
+  await page.keyboard.press('w')
+  await expect(startCell).toHaveAttribute('aria-selected', 'true')
+
+  await page.keyboard.press('5')
+  await expect(startCell).toHaveText('5')
+  await expect(rightCell).toHaveText('')
+})
+
 test('generates a playable puzzle with locked givens at the selected difficulty', async ({
   page,
 }) => {
