@@ -1,5 +1,5 @@
 .app {
-  max-width: 720px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 4rem 1.5rem;
   display: flex;
@@ -41,6 +41,72 @@
   margin: 0;
 }
 
+.setter-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.eyebrow {
+  color: #646cff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.setter-intro p {
+  max-width: 38rem;
+  margin: 0 auto;
+  color: #667085;
+}
+
+.setter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.generate-button {
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  border: 0;
+  border-radius: 10px;
+  background: #5058e5;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  transition:
+    background 120ms ease,
+    transform 120ms ease;
+}
+
+.generate-button:hover:not(:disabled) {
+  background: #3f46c7;
+  transform: translateY(-1px);
+}
+
+.generate-button:focus-visible {
+  outline: 3px solid rgba(100, 108, 255, 0.35);
+  outline-offset: 3px;
+}
+
+.generate-button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
+
+.puzzle-summary {
+  min-height: 1.5rem;
+  color: #667085;
+}
+
+.puzzle-summary strong {
+  color: #5058e5;
+  text-transform: capitalize;
+}
+
 .status {
   display: flex;
   flex-direction: column;
@@ -64,4 +130,15 @@
 .badge--off {
   background: #842029;
   color: #f8d7da;
+}
+
+@media (prefers-color-scheme: dark) {
+  .setter-intro p,
+  .puzzle-summary {
+    color: #b8c0d4;
+  }
+
+  .puzzle-summary strong {
+    color: #aeb2ff;
+  }
 }

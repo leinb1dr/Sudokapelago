@@ -45,6 +45,17 @@
   background: #dbeafe;
 }
 
+.sudoku-grid__cell--given {
+  background: #eef0ff;
+  color: #3038a8;
+  font-weight: 800;
+}
+
+.sudoku-grid__cell--given.sudoku-grid__cell--selected,
+.sudoku-grid__cell--given:focus-visible {
+  background: #d9ddff;
+}
+
 .sudoku-grid__cell--block-right {
   border-right: 3px solid #213547;
 }
@@ -75,6 +86,16 @@
   .sudoku-grid__cell--selected,
   .sudoku-grid__cell:focus-visible {
     background: #334155;
+  }
+
+  .sudoku-grid__cell--given {
+    background: #2c315a;
+    color: #c9cdff;
+  }
+
+  .sudoku-grid__cell--given.sudoku-grid__cell--selected,
+  .sudoku-grid__cell--given:focus-visible {
+    background: #3c447c;
   }
 
   .sudoku-grid__cell--block-right {
