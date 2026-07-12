@@ -1,20 +1,34 @@
 import { Client } from 'archipelago.js'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import DifficultyPicker from './DifficultyPicker'
 import SudokuGrid from './SudokuGrid'
+import { solveWithHumanTechniques } from './sudoku/humanSolver'
+import { logHumanSolveResult } from './sudoku/solveStepLog'
 import { createSudokuPuzzle } from './sudoku/setter'
-import type { Difficulty, SudokuPuzzle } from './sudoku/types'
+import { CELL_COUNT } from './sudoku/grid'
+import type { Board, Difficulty, SudokuPuzzle } from './sudoku/types'
 
 // A single shared Archipelago client. It is not connected to any server yet;
 // this simply proves the archipelago.js integration is wired up and ready.
 const archipelagoClient = new Client()
 
+function createEmptyBoard(): Board {
+  return Array<Board[number]>(CELL_COUNT).fill(0)
+}
+
 function App() {
   const archipelagoReady = archipelagoClient instanceof Client
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const [puzzle, setPuzzle] = useState<SudokuPuzzle | null>(null)
+  const [board, setBoard] = useState<Board>(() => createEmptyBoard())
   const [isGenerating, setIsGenerating] = useState(false)
+
+  useEffect(() => {
+    if (puzzle) {
+      setBoard([...puzzle.puzzle])
+    }
+  }, [puzzle])
 
   async function generatePuzzle() {
     setIsGenerating(true)
@@ -25,6 +39,15 @@ function App() {
     })
     setPuzzle(createSudokuPuzzle({ difficulty }))
     setIsGenerating(false)
+  }
+
+  function debugSolve() {
+    const result = solveWithHumanTechniques([...board], { difficulty })
+    logHumanSolveResult(result, difficulty)
+
+    if (result.solved) {
+      setBoard([...result.board])
+    }
   }
 
   return (
@@ -50,16 +73,25 @@ function App() {
 
         <div className="setter-controls">
           <DifficultyPicker value={difficulty} onChange={setDifficulty} />
-          <button
-            className="generate-button"
-            disabled={isGenerating}
-            onClick={() => void generatePuzzle()}
-            type="button"
-          >
-            {isGenerating
-              ? 'Testing clue removals…'
-              : `Generate ${difficulty} puzzle`}
-          </button>
+          <div className="setter-actions">
+            <button
+              className="generate-button"
+              disabled={isGenerating}
+              onClick={() => void generatePuzzle()}
+              type="button"
+            >
+              {isGenerating
+                ? 'Testing clue removals…'
+                : `Generate ${difficulty} puzzle`}
+            </button>
+            <button
+              className="debug-solve-button"
+              onClick={debugSolve}
+              type="button"
+            >
+              Debug solve with {difficulty} techniques
+            </button>
+          </div>
         </div>
 
         {puzzle ? (
@@ -73,7 +105,11 @@ function App() {
           </p>
         )}
 
-        <SudokuGrid puzzle={puzzle?.puzzle} />
+        <SudokuGrid
+          board={board}
+          givenCells={puzzle?.puzzle.map((value) => value !== 0)}
+          onBoardChange={setBoard}
+        />
       </section>
 
       <section className="status">

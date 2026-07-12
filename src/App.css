@@ -67,6 +67,12 @@
   gap: 1rem;
 }
 
+.setter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .generate-button {
   min-height: 3rem;
   padding: 0.75rem 1.25rem;
@@ -95,6 +101,31 @@
 .generate-button:disabled {
   cursor: progress;
   opacity: 0.72;
+}
+
+.debug-solve-button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid rgba(80, 88, 229, 0.35);
+  border-radius: 10px;
+  background: transparent;
+  color: #5058e5;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.debug-solve-button:hover {
+  background: rgba(80, 88, 229, 0.08);
+  border-color: rgba(80, 88, 229, 0.55);
+}
+
+.debug-solve-button:focus-visible {
+  outline: 3px solid rgba(100, 108, 255, 0.35);
+  outline-offset: 3px;
 }
 
 .puzzle-summary {

@@ -1,12 +1,14 @@
 import './SudokuGrid.css'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { BOX_SIZE, CELL_COUNT, GRID_SIZE } from './sudoku/grid'
 import type { Board, CellValue } from './sudoku/types'
 
 const VALID_CELL_VALUE_PATTERN = /^[1-9]$/
 
 interface SudokuGridProps {
-  puzzle?: Board
+  board: Board
+  givenCells?: readonly boolean[]
+  onBoardChange: (board: Board) => void
 }
 
 function getCellClassName(
@@ -44,28 +46,22 @@ function getCellClassName(
   return classes.join(' ')
 }
 
-function getInitialValues(puzzle?: Board): CellValue[] {
-  return puzzle ? [...puzzle] : Array<CellValue>(CELL_COUNT).fill(0)
+function getGivenCells(puzzle?: Board): readonly boolean[] {
+  return puzzle?.map((value) => value !== 0) ??
+    Array<boolean>(CELL_COUNT).fill(false)
 }
 
-function SudokuGrid({ puzzle }: SudokuGridProps) {
-  const [cellValues, setCellValues] = useState(() => getInitialValues(puzzle))
+function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
   const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(null)
-  const givenCells = puzzle?.map((value) => value !== 0) ??
-    Array<boolean>(CELL_COUNT).fill(false)
-
-  useEffect(() => {
-    setCellValues(getInitialValues(puzzle))
-    setSelectedCellIndex(null)
-  }, [puzzle])
+  const lockedCells = givenCells ?? getGivenCells()
 
   function updateCellValue(cellIndex: number, value: CellValue) {
-    if (givenCells[cellIndex]) {
+    if (lockedCells[cellIndex]) {
       return
     }
 
-    setCellValues((currentCellValues) =>
-      currentCellValues.map((currentValue, currentIndex) =>
+    onBoardChange(
+      board.map((currentValue, currentIndex) =>
         currentIndex === cellIndex ? value : currentValue,
       ),
     )
@@ -77,10 +73,10 @@ function SudokuGrid({ puzzle }: SudokuGridProps) {
         <div className="sudoku-grid__row" role="row" key={rowIndex}>
           {Array.from({ length: GRID_SIZE }).map((_, columnIndex) => {
             const cellIndex = rowIndex * GRID_SIZE + columnIndex
-            const cellValue = cellValues[cellIndex]
+            const cellValue = board[cellIndex]
             const cellDescription = `row ${rowIndex + 1} column ${columnIndex + 1}`
             const isSelected = selectedCellIndex === cellIndex
-            const isGiven = givenCells[cellIndex]
+            const isGiven = lockedCells[cellIndex]
 
             return (
               <div

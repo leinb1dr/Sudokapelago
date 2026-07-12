@@ -25,6 +25,8 @@ describe('human solver', () => {
     expect(result.reason).toBe('solved')
     expect(result.board).toEqual(boardFromString(SOLUTION))
     expect(result.steps.length).toBeGreaterThan(0)
+    expect(result.steps[0].details.summary).toMatch(/^(Cross Hatch|Hidden Single|Naked Single):/)
+    expect(result.steps[0].details.reasoning.length).toBeGreaterThan(0)
   })
 
   it('restarts at the most advanced technique after every change', () => {

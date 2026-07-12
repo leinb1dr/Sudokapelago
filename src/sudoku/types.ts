@@ -30,10 +30,23 @@ export const TECHNIQUE_NAMES = [
 
 export type TechniqueName = (typeof TECHNIQUE_NAMES)[number]
 
+export interface SolveStepAction {
+  type: 'placement' | 'elimination'
+  cell: number
+  digit: Digit
+}
+
+export interface SolveStepDetails {
+  summary: string
+  reasoning: string[]
+  actions: SolveStepAction[]
+}
+
 export interface TechniqueResult {
   changed: boolean
   placements: number
   eliminations: number
+  details?: SolveStepDetails
 }
 
 export interface HumanTechnique {
@@ -43,6 +56,7 @@ export interface HumanTechnique {
 
 export interface SolveStep extends TechniqueResult {
   technique: TechniqueName
+  details: SolveStepDetails
 }
 
 export interface HumanSolveResult {
