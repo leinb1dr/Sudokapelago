@@ -1,9 +1,31 @@
 import './SudokuGrid.css'
-import { useState } from 'react'
-import { BOX_SIZE, CELL_COUNT, GRID_SIZE } from './sudoku/grid'
+import { useRef, useState } from 'react'
+import {
+  BOX_SIZE,
+  CELL_COUNT,
+  GRID_SIZE,
+  moveCellIndex,
+} from './sudoku/grid'
 import type { Board, CellValue } from './sudoku/types'
 
 const VALID_CELL_VALUE_PATTERN = /^[1-9]$/
+
+const NAVIGATION_KEYS: Readonly<
+  Record<string, { deltaRow: number; deltaColumn: number }>
+> = {
+  ArrowUp: { deltaRow: -1, deltaColumn: 0 },
+  ArrowDown: { deltaRow: 1, deltaColumn: 0 },
+  ArrowLeft: { deltaRow: 0, deltaColumn: -1 },
+  ArrowRight: { deltaRow: 0, deltaColumn: 1 },
+  w: { deltaRow: -1, deltaColumn: 0 },
+  W: { deltaRow: -1, deltaColumn: 0 },
+  s: { deltaRow: 1, deltaColumn: 0 },
+  S: { deltaRow: 1, deltaColumn: 0 },
+  a: { deltaRow: 0, deltaColumn: -1 },
+  A: { deltaRow: 0, deltaColumn: -1 },
+  d: { deltaRow: 0, deltaColumn: 1 },
+  D: { deltaRow: 0, deltaColumn: 1 },
+}
 
 interface SudokuGridProps {
   board: Board
@@ -53,7 +75,32 @@ function getGivenCells(puzzle?: Board): readonly boolean[] {
 
 function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
   const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(null)
+  const cellRefs = useRef<(HTMLDivElement | null)[]>([])
   const lockedCells = givenCells ?? getGivenCells()
+
+  function selectCell(cellIndex: number) {
+    setSelectedCellIndex(cellIndex)
+    cellRefs.current[cellIndex]?.focus()
+  }
+
+  function navigateFromCell(
+    event: React.KeyboardEvent<HTMLDivElement>,
+    cellIndex: number,
+  ) {
+    const navigation = NAVIGATION_KEYS[event.key]
+    if (!navigation) {
+      return
+    }
+
+    event.preventDefault()
+    const currentIndex = selectedCellIndex ?? cellIndex
+    const nextIndex = moveCellIndex(
+      currentIndex,
+      navigation.deltaRow,
+      navigation.deltaColumn,
+    )
+    selectCell(nextIndex)
+  }
 
   function updateCellValue(cellIndex: number, value: CellValue) {
     if (lockedCells[cellIndex]) {
@@ -80,6 +127,9 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
 
             return (
               <div
+                ref={(element) => {
+                  cellRefs.current[cellIndex] = element
+                }}
                 aria-label={
                   cellValue
                     ? `${isGiven ? 'Given cell' : 'Cell'} ${cellDescription} value ${cellValue}`
@@ -95,12 +145,17 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
                 )}
                 key={`${rowIndex}-${columnIndex}`}
                 onClick={() => {
-                  setSelectedCellIndex(cellIndex)
+                  selectCell(cellIndex)
                 }}
                 onFocus={() => {
                   setSelectedCellIndex(cellIndex)
                 }}
                 onKeyDown={(event) => {
+                  if (NAVIGATION_KEYS[event.key]) {
+                    navigateFromCell(event, cellIndex)
+                    return
+                  }
+
                   if (VALID_CELL_VALUE_PATTERN.test(event.key)) {
                     updateCellValue(
                       selectedCellIndex ?? cellIndex,
@@ -114,7 +169,7 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
                   }
                 }}
                 role="gridcell"
-                tabIndex={0}
+                tabIndex={selectedCellIndex === cellIndex ? 0 : -1}
               >
                 {cellValue || ''}
               </div>
