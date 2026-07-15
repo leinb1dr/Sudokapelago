@@ -19,7 +19,12 @@ describe('SudokuGrid.css pencil mark padding', () => {
       /\.sudoku-grid__corner-marks\s*\{[^}]*inset:\s*([\d.]+)rem/,
     )?.[1]
 
-    expect(Number(standardInset)).toBeGreaterThanOrEqual(0.3)
-    expect(Number(cornerInset)).toBeGreaterThanOrEqual(0.3)
+    expect(Number(standardInset)).toBeGreaterThanOrEqual(0.4)
+    expect(Number(cornerInset)).toBeGreaterThanOrEqual(0.4)
+  })
+
+  it('draws the outer grid border on the grid itself instead of an overlay', () => {
+    expect(css).toMatch(/\.sudoku-grid\s*\{[^}]*border:\s*4px solid/)
+    expect(css).not.toMatch(/\.sudoku-grid::after/)
   })
 })

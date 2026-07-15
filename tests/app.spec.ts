@@ -175,7 +175,7 @@ test('supports standard and corner/center pencil marks with independent styles',
   const standardInset = await firstCell
     .locator('.sudoku-grid__standard-marks')
     .evaluate((element) => getComputedStyle(element).inset)
-  expect(standardInset.split(/\s+/).every((value) => Number.parseFloat(value) >= 4.8)).toBe(
+  expect(standardInset.split(/\s+/).every((value) => Number.parseFloat(value) >= 6.4)).toBe(
     true,
   )
 
