@@ -10,6 +10,20 @@ export type PencilStyle = (typeof PENCIL_STYLES)[number]
 export const CORNER_CENTER_MODES = ['corner', 'center'] as const
 export type CornerCenterMode = (typeof CORNER_CENTER_MODES)[number]
 
+export function toggleEntryMode(mode: EntryMode): EntryMode {
+  return mode === 'digit' ? 'pencil' : 'digit'
+}
+
+export function togglePencilStyle(style: PencilStyle): PencilStyle {
+  return style === 'standard' ? 'corner-center' : 'standard'
+}
+
+export function toggleCornerCenterMode(
+  mode: CornerCenterMode,
+): CornerCenterMode {
+  return mode === 'corner' ? 'center' : 'corner'
+}
+
 export const CORNER_MARK_LIMIT = 4
 export const STANDARD_DIGITS: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 

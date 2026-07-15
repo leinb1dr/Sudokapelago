@@ -7,9 +7,12 @@ import {
   getCellAccessibleName,
   hasVisiblePencilMarks,
   toggleCenterMark,
+  toggleCornerCenterMode,
   toggleCornerMark,
   toggleDigitValue,
+  toggleEntryMode,
   togglePencilMark,
+  togglePencilStyle,
   toggleStandardMark,
   updatePencilBoardCell,
 } from '../../src/sudoku/pencilMarks'
@@ -159,5 +162,14 @@ describe('pencilMarks', () => {
     ).toBe(
       'Empty cell row 1 column 2 with corner pencil marks 2 4, center pencil marks 3 5',
     )
+  })
+
+  it('toggles entry mode, pencil style, and corner/center mode', () => {
+    expect(toggleEntryMode('digit')).toBe('pencil')
+    expect(toggleEntryMode('pencil')).toBe('digit')
+    expect(togglePencilStyle('standard')).toBe('corner-center')
+    expect(togglePencilStyle('corner-center')).toBe('standard')
+    expect(toggleCornerCenterMode('corner')).toBe('center')
+    expect(toggleCornerCenterMode('center')).toBe('corner')
   })
 })

@@ -16,6 +16,7 @@ import {
 import { createSudokuPuzzle } from './sudoku/setter'
 import { CELL_COUNT } from './sudoku/grid'
 import type { Board, Difficulty, SudokuPuzzle } from './sudoku/types'
+import useEntryModeHotkeys from './useEntryModeHotkeys'
 
 // A single shared Archipelago client. It is not connected to any server yet;
 // this simply proves the archipelago.js integration is wired up and ready.
@@ -38,6 +39,13 @@ function App() {
   const [cornerCenterMode, setCornerCenterMode] =
     useState<CornerCenterMode>('corner')
   const [isGenerating, setIsGenerating] = useState(false)
+  const effectivePencilStyle = useEntryModeHotkeys({
+    cornerCenterMode,
+    entryMode,
+    onCornerCenterModeChange: setCornerCenterMode,
+    onEntryModeChange: setEntryMode,
+    pencilStyle,
+  })
 
   useEffect(() => {
     if (puzzle) {
@@ -127,7 +135,7 @@ function App() {
           onCornerCenterModeChange={setCornerCenterMode}
           onEntryModeChange={setEntryMode}
           onPencilStyleChange={setPencilStyle}
-          pencilStyle={pencilStyle}
+          pencilStyle={effectivePencilStyle}
         />
 
         <SudokuGrid
@@ -138,7 +146,7 @@ function App() {
           onBoardChange={setBoard}
           onPencilBoardChange={setPencilBoard}
           pencilBoard={pencilBoard}
-          pencilStyle={pencilStyle}
+          pencilStyle={effectivePencilStyle}
         />
       </section>
 
