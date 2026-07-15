@@ -95,59 +95,64 @@ function App() {
           </p>
         </div>
 
-        <div className="setter-controls">
-          <DifficultyPicker value={difficulty} onChange={setDifficulty} />
-          <div className="setter-actions">
-            <button
-              className="generate-button"
-              disabled={isGenerating}
-              onClick={() => void generatePuzzle()}
-              type="button"
-            >
-              {isGenerating
-                ? 'Testing clue removals…'
-                : `Generate ${difficulty} puzzle`}
-            </button>
-            <button
-              className="debug-solve-button"
-              onClick={debugSolve}
-              type="button"
-            >
-              Debug solve with {difficulty} techniques
-            </button>
+        <div className="game-layout">
+          <div className="control-panel">
+            <DifficultyPicker value={difficulty} onChange={setDifficulty} />
+
+            <div className="setter-actions">
+              <button
+                className="generate-button"
+                disabled={isGenerating}
+                onClick={() => void generatePuzzle()}
+                type="button"
+              >
+                {isGenerating
+                  ? 'Testing clue removals…'
+                  : `Generate ${difficulty} puzzle`}
+              </button>
+              <button
+                className="debug-solve-button"
+                onClick={debugSolve}
+                type="button"
+              >
+                Debug solve with {difficulty} techniques
+              </button>
+            </div>
+
+            {puzzle ? (
+              <p className="puzzle-summary" role="status">
+                <strong>{puzzle.difficulty}</strong> puzzle · {puzzle.clues}{' '}
+                clues · {puzzle.attempts.length} cells tested
+              </p>
+            ) : (
+              <p className="puzzle-summary" role="status">
+                Choose a difficulty, then generate a puzzle.
+              </p>
+            )}
+
+            <EntryModeControls
+              cornerCenterMode={cornerCenterMode}
+              entryMode={entryMode}
+              onCornerCenterModeChange={setCornerCenterMode}
+              onEntryModeChange={setEntryMode}
+              onPencilStyleChange={setPencilStyle}
+              pencilStyle={effectivePencilStyle}
+            />
+          </div>
+
+          <div className="game-layout__board">
+            <SudokuGrid
+              board={board}
+              cornerCenterMode={cornerCenterMode}
+              entryMode={entryMode}
+              givenCells={puzzle?.puzzle.map((value) => value !== 0)}
+              onBoardChange={setBoard}
+              onPencilBoardChange={setPencilBoard}
+              pencilBoard={pencilBoard}
+              pencilStyle={effectivePencilStyle}
+            />
           </div>
         </div>
-
-        {puzzle ? (
-          <p className="puzzle-summary" role="status">
-            <strong>{puzzle.difficulty}</strong> puzzle · {puzzle.clues} clues ·{' '}
-            {puzzle.attempts.length} cells tested
-          </p>
-        ) : (
-          <p className="puzzle-summary" role="status">
-            Choose a difficulty, then generate a puzzle.
-          </p>
-        )}
-
-        <EntryModeControls
-          cornerCenterMode={cornerCenterMode}
-          entryMode={entryMode}
-          onCornerCenterModeChange={setCornerCenterMode}
-          onEntryModeChange={setEntryMode}
-          onPencilStyleChange={setPencilStyle}
-          pencilStyle={effectivePencilStyle}
-        />
-
-        <SudokuGrid
-          board={board}
-          cornerCenterMode={cornerCenterMode}
-          entryMode={entryMode}
-          givenCells={puzzle?.puzzle.map((value) => value !== 0)}
-          onBoardChange={setBoard}
-          onPencilBoardChange={setPencilBoard}
-          pencilBoard={pencilBoard}
-          pencilStyle={effectivePencilStyle}
-        />
       </section>
 
       <section className="status">

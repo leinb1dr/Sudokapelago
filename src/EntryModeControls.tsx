@@ -40,6 +40,9 @@ function EntryModeControls({
   onPencilStyleChange,
   onCornerCenterModeChange,
 }: EntryModeControlsProps) {
+  const showPencilStyle = entryMode === 'pencil'
+  const showCornerCenter = showPencilStyle && pencilStyle === 'corner-center'
+
   return (
     <div className="entry-mode-controls">
       <fieldset className="entry-mode-controls__group">
@@ -62,49 +65,51 @@ function EntryModeControls({
         </div>
       </fieldset>
 
-      {entryMode === 'pencil' ? (
-        <fieldset className="entry-mode-controls__group">
-          <legend>Pencil mark style</legend>
-          <div className="entry-mode-controls__options">
-            {PENCIL_STYLES.map((style) => (
-              <label className="entry-mode-controls__option" key={style}>
-                <input
-                  checked={pencilStyle === style}
-                  name="pencil-style"
-                  onChange={() => {
-                    onPencilStyleChange(style)
-                  }}
-                  type="radio"
-                  value={style}
-                />
-                <span>{PENCIL_STYLE_LABELS[style]}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ) : null}
+      <fieldset
+        className="entry-mode-controls__group"
+        hidden={!showPencilStyle}
+      >
+        <legend>Pencil mark style</legend>
+        <div className="entry-mode-controls__options">
+          {PENCIL_STYLES.map((style) => (
+            <label className="entry-mode-controls__option" key={style}>
+              <input
+                checked={pencilStyle === style}
+                name="pencil-style"
+                onChange={() => {
+                  onPencilStyleChange(style)
+                }}
+                type="radio"
+                value={style}
+              />
+              <span>{PENCIL_STYLE_LABELS[style]}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
-      {entryMode === 'pencil' && pencilStyle === 'corner-center' ? (
-        <fieldset className="entry-mode-controls__group">
-          <legend>Corner or center</legend>
-          <div className="entry-mode-controls__options">
-            {CORNER_CENTER_MODES.map((mode) => (
-              <label className="entry-mode-controls__option" key={mode}>
-                <input
-                  checked={cornerCenterMode === mode}
-                  name="corner-center-mode"
-                  onChange={() => {
-                    onCornerCenterModeChange(mode)
-                  }}
-                  type="radio"
-                  value={mode}
-                />
-                <span>{CORNER_CENTER_LABELS[mode]}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ) : null}
+      <fieldset
+        className="entry-mode-controls__group"
+        hidden={!showCornerCenter}
+      >
+        <legend>Corner or center</legend>
+        <div className="entry-mode-controls__options">
+          {CORNER_CENTER_MODES.map((mode) => (
+            <label className="entry-mode-controls__option" key={mode}>
+              <input
+                checked={cornerCenterMode === mode}
+                name="corner-center-mode"
+                onChange={() => {
+                  onCornerCenterModeChange(mode)
+                }}
+                type="radio"
+                value={mode}
+              />
+              <span>{CORNER_CENTER_LABELS[mode]}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
     </div>
   )
 }

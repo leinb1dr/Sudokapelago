@@ -5,6 +5,13 @@ import EntryModeControls from '../../src/EntryModeControls'
 
 afterEach(cleanup)
 
+function fieldsetForLegend(label: string): HTMLFieldSetElement {
+  const legend = screen.getByText(label)
+  const fieldset = legend.closest('fieldset')
+  expect(fieldset).toBeTruthy()
+  return fieldset as HTMLFieldSetElement
+}
+
 describe('EntryModeControls', () => {
   it('shows pencil style options only in pencil mode', async () => {
     const user = userEvent.setup()
@@ -23,8 +30,8 @@ describe('EntryModeControls', () => {
       />,
     )
 
-    expect(screen.queryByText('Pencil mark style')).toBeNull()
-    expect(screen.queryByText('Corner or center')).toBeNull()
+    expect(fieldsetForLegend('Pencil mark style').hidden).toBe(true)
+    expect(fieldsetForLegend('Corner or center').hidden).toBe(true)
 
     await user.click(screen.getByRole('radio', { name: 'Pencil' }))
     expect(onEntryModeChange).toHaveBeenCalledWith('pencil')
@@ -40,8 +47,8 @@ describe('EntryModeControls', () => {
       />,
     )
 
-    expect(screen.getByText('Pencil mark style')).toBeTruthy()
-    expect(screen.queryByText('Corner or center')).toBeNull()
+    expect(fieldsetForLegend('Pencil mark style').hidden).toBe(false)
+    expect(fieldsetForLegend('Corner or center').hidden).toBe(true)
 
     await user.click(screen.getByRole('radio', { name: 'Corner/Center' }))
     expect(onPencilStyleChange).toHaveBeenCalledWith('corner-center')
@@ -57,7 +64,7 @@ describe('EntryModeControls', () => {
       />,
     )
 
-    expect(screen.getByText('Corner or center')).toBeTruthy()
+    expect(fieldsetForLegend('Corner or center').hidden).toBe(false)
     await user.click(screen.getByRole('radio', { name: 'Center' }))
     expect(onCornerCenterModeChange).toHaveBeenCalledWith('center')
   })
