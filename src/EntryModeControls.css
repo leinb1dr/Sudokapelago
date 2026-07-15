@@ -1,31 +1,51 @@
 .entry-mode-controls {
   display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.55rem 0.85rem;
+  width: 100%;
 }
 
 .entry-mode-controls__group {
   margin: 0;
   padding: 0;
   border: 0;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .entry-mode-controls__group legend {
   width: 100%;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.7rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #667085;
+}
+
+.entry-mode-controls__group--inactive {
+  opacity: 0.42;
 }
 
 .entry-mode-controls__options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
 }
 
 .entry-mode-controls__option {
   position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   cursor: pointer;
+}
+
+.entry-mode-controls__group:disabled .entry-mode-controls__option,
+.entry-mode-controls__group--inactive .entry-mode-controls__option {
+  cursor: not-allowed;
 }
 
 .entry-mode-controls__option input {
@@ -35,16 +55,21 @@
 }
 
 .entry-mode-controls__option span {
-  min-height: 2.5rem;
-  min-width: 6.5rem;
-  padding: 0.55rem 0.9rem;
+  min-height: 2rem;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.3rem 0.45rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(100, 108, 255, 0.28);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(100, 108, 255, 0.05);
+  font-size: 0.82rem;
   font-weight: 650;
+  line-height: 1.15;
+  white-space: nowrap;
   transition:
     border-color 120ms ease,
     background 120ms ease,
@@ -56,6 +81,14 @@
   border-color: #646cff;
 }
 
+.entry-mode-controls__group:disabled .entry-mode-controls__option:hover span,
+.entry-mode-controls__group--inactive
+  .entry-mode-controls__option:hover
+  span {
+  transform: none;
+  border-color: rgba(100, 108, 255, 0.28);
+}
+
 .entry-mode-controls__option input:checked + span {
   border-color: #646cff;
   background: rgba(100, 108, 255, 0.14);
@@ -65,4 +98,30 @@
 .entry-mode-controls__option input:focus-visible + span {
   outline: 3px solid rgba(100, 108, 255, 0.35);
   outline-offset: 2px;
+}
+
+@media (max-width: 40rem) {
+  .entry-mode-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+
+  .entry-mode-controls__group legend {
+    margin-bottom: 0.2rem;
+    font-size: 0.65rem;
+  }
+
+  .entry-mode-controls__option span {
+    min-height: 1.75rem;
+    padding: 0.22rem 0.35rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .entry-mode-controls__group legend {
+    color: #b8c0d4;
+  }
 }

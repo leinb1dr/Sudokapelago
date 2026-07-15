@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import EntryModeControls from '../../src/EntryModeControls'
@@ -6,7 +6,7 @@ import EntryModeControls from '../../src/EntryModeControls'
 afterEach(cleanup)
 
 describe('EntryModeControls', () => {
-  it('shows pencil style options only in pencil mode', async () => {
+  it('keeps pencil options mounted and enables them only in pencil mode', async () => {
     const user = userEvent.setup()
     const onEntryModeChange = vi.fn()
     const onPencilStyleChange = vi.fn()
@@ -23,8 +23,13 @@ describe('EntryModeControls', () => {
       />,
     )
 
-    expect(screen.queryByText('Pencil mark style')).toBeNull()
-    expect(screen.queryByText('Corner or center')).toBeNull()
+    const pencilStyleGroup = screen.getByText('Pencil style').closest('fieldset')
+    const markTargetGroup = screen.getByText('Mark target').closest('fieldset')
+
+    expect(pencilStyleGroup).toBeTruthy()
+    expect(markTargetGroup).toBeTruthy()
+    expect((pencilStyleGroup as HTMLFieldSetElement).disabled).toBe(true)
+    expect((markTargetGroup as HTMLFieldSetElement).disabled).toBe(true)
 
     await user.click(screen.getByRole('radio', { name: 'Pencil' }))
     expect(onEntryModeChange).toHaveBeenCalledWith('pencil')
@@ -40,8 +45,8 @@ describe('EntryModeControls', () => {
       />,
     )
 
-    expect(screen.getByText('Pencil mark style')).toBeTruthy()
-    expect(screen.queryByText('Corner or center')).toBeNull()
+    expect((pencilStyleGroup as HTMLFieldSetElement).disabled).toBe(false)
+    expect((markTargetGroup as HTMLFieldSetElement).disabled).toBe(true)
 
     await user.click(screen.getByRole('radio', { name: 'Corner/Center' }))
     expect(onPencilStyleChange).toHaveBeenCalledWith('corner-center')
@@ -57,8 +62,24 @@ describe('EntryModeControls', () => {
       />,
     )
 
-    expect(screen.getByText('Corner or center')).toBeTruthy()
+    expect((markTargetGroup as HTMLFieldSetElement).disabled).toBe(false)
     await user.click(screen.getByRole('radio', { name: 'Center' }))
     expect(onCornerCenterModeChange).toHaveBeenCalledWith('center')
+  })
+
+  it('exposes a stable control region for layout pairing with the board', () => {
+    render(
+      <EntryModeControls
+        cornerCenterMode="corner"
+        entryMode="digit"
+        onCornerCenterModeChange={vi.fn()}
+        onEntryModeChange={vi.fn()}
+        onPencilStyleChange={vi.fn()}
+        pencilStyle="standard"
+      />,
+    )
+
+    const region = screen.getByLabelText('Entry controls')
+    expect(within(region).getAllByRole('group')).toHaveLength(3)
   })
 })
