@@ -130,27 +130,32 @@ describe('App', () => {
     ).toBe(true)
     expect(screen.getByText('Pencil mark style')).toBeTruthy()
 
-    await user.keyboard('{Shift>}')
-    expect(
-      (
-        screen.getByRole('radio', { name: 'Corner/Center' }) as HTMLInputElement
-      ).checked,
-    ).toBe(true)
+    await user.click(screen.getByRole('radio', { name: 'Corner/Center' }))
     expect(screen.getByText('Corner or center')).toBeTruthy()
     expect(
       (screen.getByRole('radio', { name: 'Corner' }) as HTMLInputElement)
         .checked,
     ).toBe(true)
 
-    await user.keyboard('{Control}')
+    await user.keyboard('{Shift>}')
     expect(
       (screen.getByRole('radio', { name: 'Center' }) as HTMLInputElement)
+        .checked,
+    ).toBe(true)
+    expect(
+      (screen.getByRole('radio', { name: 'Corner/Center' }) as HTMLInputElement)
+        .checked,
+    ).toBe(true)
+
+    await user.keyboard('{Control}')
+    expect(
+      (screen.getByRole('radio', { name: 'Corner' }) as HTMLInputElement)
         .checked,
     ).toBe(true)
 
     await user.keyboard('{/Shift}')
     expect(
-      (screen.getByRole('radio', { name: 'Standard' }) as HTMLInputElement)
+      (screen.getByRole('radio', { name: 'Center' }) as HTMLInputElement)
         .checked,
     ).toBe(true)
 

@@ -39,12 +39,11 @@ function App() {
   const [cornerCenterMode, setCornerCenterMode] =
     useState<CornerCenterMode>('corner')
   const [isGenerating, setIsGenerating] = useState(false)
-  const effectivePencilStyle = useEntryModeHotkeys({
+  const effectiveCornerCenterMode = useEntryModeHotkeys({
     cornerCenterMode,
     entryMode,
     onCornerCenterModeChange: setCornerCenterMode,
     onEntryModeChange: setEntryMode,
-    pencilStyle,
   })
 
   useEffect(() => {
@@ -130,23 +129,23 @@ function App() {
         )}
 
         <EntryModeControls
-          cornerCenterMode={cornerCenterMode}
+          cornerCenterMode={effectiveCornerCenterMode}
           entryMode={entryMode}
           onCornerCenterModeChange={setCornerCenterMode}
           onEntryModeChange={setEntryMode}
           onPencilStyleChange={setPencilStyle}
-          pencilStyle={effectivePencilStyle}
+          pencilStyle={pencilStyle}
         />
 
         <SudokuGrid
           board={board}
-          cornerCenterMode={cornerCenterMode}
+          cornerCenterMode={effectiveCornerCenterMode}
           entryMode={entryMode}
           givenCells={puzzle?.puzzle.map((value) => value !== 0)}
           onBoardChange={setBoard}
           onPencilBoardChange={setPencilBoard}
           pencilBoard={pencilBoard}
-          pencilStyle={effectivePencilStyle}
+          pencilStyle={pencilStyle}
         />
       </section>
 
