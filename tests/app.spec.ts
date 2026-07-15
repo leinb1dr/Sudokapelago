@@ -161,7 +161,7 @@ test('supports standard and corner/center pencil marks with independent styles',
   const grid = page.getByRole('grid', { name: 'Sudoku grid' })
   const firstCell = grid.getByRole('gridcell').first()
 
-  await page.getByRole('radio', { name: 'Pencil' }).click()
+  await page.getByText('Pencil', { exact: true }).click()
   await expect(page.getByText('Pencil mark style')).toBeVisible()
 
   await firstCell.click()
@@ -173,7 +173,7 @@ test('supports standard and corner/center pencil marks with independent styles',
     'Empty cell row 1 column 1 with standard pencil marks 1 9',
   )
 
-  await page.getByRole('radio', { name: 'Corner/Center' }).click()
+  await page.getByText('Corner/Center', { exact: true }).click()
   await expect(page.getByText('Corner or center')).toBeVisible()
   await expect(firstCell.locator('[data-digit="1"]')).toHaveCount(0)
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
@@ -188,19 +188,19 @@ test('supports standard and corner/center pencil marks with independent styles',
     '5',
   )
 
-  await page.getByRole('radio', { name: 'Center' }).click()
+  await page.getByText('Center', { exact: true }).click()
   await firstCell.click()
   await page.keyboard.press('2')
   await page.keyboard.press('9')
   await expect(firstCell.locator('.sudoku-grid__center-marks')).toHaveText('2 9')
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveText('1')
 
-  await page.getByRole('radio', { name: 'Standard' }).click()
+  await page.getByText('Standard', { exact: true }).click()
   await expect(firstCell.locator('[data-digit="1"]')).toHaveText('1')
   await expect(firstCell.locator('[data-digit="9"]')).toHaveText('9')
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
 
-  await page.getByRole('radio', { name: 'Number' }).click()
+  await page.getByText('Number', { exact: true }).click()
   await firstCell.click()
   await page.keyboard.press('8')
   await expect(firstCell).toHaveText('8')
