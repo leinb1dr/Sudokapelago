@@ -113,4 +113,29 @@ describe('App', () => {
     logSpy.mockRestore()
     groupEndSpy.mockRestore()
   })
+
+  it('toggles entry modes from Tab, Control, and held Shift', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByRole('radio', { name: 'Number' })).toBeChecked()
+
+    await user.keyboard('{Tab}')
+    expect(screen.getByRole('radio', { name: 'Pencil' })).toBeChecked()
+    expect(screen.getByText('Pencil mark style')).toBeTruthy()
+
+    await user.keyboard('{Shift>}')
+    expect(screen.getByRole('radio', { name: 'Corner/Center' })).toBeChecked()
+    expect(screen.getByText('Corner or center')).toBeTruthy()
+    expect(screen.getByRole('radio', { name: 'Corner' })).toBeChecked()
+
+    await user.keyboard('{Control}')
+    expect(screen.getByRole('radio', { name: 'Center' })).toBeChecked()
+
+    await user.keyboard('{/Shift}')
+    expect(screen.getByRole('radio', { name: 'Standard' })).toBeChecked()
+
+    await user.keyboard('{Tab}')
+    expect(screen.getByRole('radio', { name: 'Number' })).toBeChecked()
+  })
 })
