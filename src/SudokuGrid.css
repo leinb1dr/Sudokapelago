@@ -40,6 +40,71 @@
   user-select: none;
 }
 
+.sudoku-grid__digit {
+  line-height: 1;
+}
+
+.sudoku-grid__standard-marks {
+  position: absolute;
+  inset: 0.12rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  pointer-events: none;
+}
+
+.sudoku-grid__standard-mark {
+  color: #5b6472;
+  font-size: clamp(0.45rem, 1.8vw, 0.72rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.sudoku-grid__corner-marks {
+  position: absolute;
+  inset: 0.1rem;
+  pointer-events: none;
+}
+
+.sudoku-grid__corner-mark {
+  position: absolute;
+  color: #5b6472;
+  font-size: clamp(0.45rem, 1.8vw, 0.72rem);
+  font-weight: 650;
+  line-height: 1;
+}
+
+.sudoku-grid__corner-mark--top-left {
+  top: 0;
+  left: 0;
+}
+
+.sudoku-grid__corner-mark--top-right {
+  top: 0;
+  right: 0;
+}
+
+.sudoku-grid__corner-mark--bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.sudoku-grid__corner-mark--bottom-right {
+  bottom: 0;
+  right: 0;
+}
+
+.sudoku-grid__center-marks {
+  color: #5b6472;
+  font-size: clamp(0.42rem, 1.6vw, 0.68rem);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .sudoku-grid__cell--selected,
 .sudoku-grid__cell:focus-visible {
   background: #dbeafe;
@@ -81,6 +146,12 @@
     border-color: rgba(247, 247, 247, 0.45);
     background: #242424;
     color: #f7f7f7;
+  }
+
+  .sudoku-grid__standard-mark,
+  .sudoku-grid__corner-mark,
+  .sudoku-grid__center-marks {
+    color: #a8b0bd;
   }
 
   .sudoku-grid__cell--selected,

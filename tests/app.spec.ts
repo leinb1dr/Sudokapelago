@@ -152,3 +152,59 @@ test('debug solve logs human technique steps to the console', async ({ page }) =
     consoleMessages.some((message) => /Step 1: (Cross Hatch|Hidden Single|Naked Single):/.test(message)),
   ).toBe(true)
 })
+
+test('supports standard and corner/center pencil marks with independent styles', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
+  const firstCell = grid.getByRole('gridcell').first()
+
+  await page.getByText('Pencil', { exact: true }).click()
+  await expect(page.getByText('Pencil mark style')).toBeVisible()
+
+  await firstCell.click()
+  await page.keyboard.press('1')
+  await page.keyboard.press('9')
+  await expect(firstCell.locator('[data-digit="1"]')).toHaveText('1')
+  await expect(firstCell.locator('[data-digit="9"]')).toHaveText('9')
+  await expect(firstCell).toHaveAccessibleName(
+    'Empty cell row 1 column 1 with standard pencil marks 1 9',
+  )
+
+  await page.getByText('Corner/Center', { exact: true }).click()
+  await expect(page.getByText('Corner or center')).toBeVisible()
+  await expect(firstCell.locator('[data-digit="1"]')).toHaveCount(0)
+  await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
+
+  await firstCell.click()
+  await page.keyboard.press('1')
+  await page.keyboard.press('5')
+  await page.keyboard.press('3')
+  await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveText('1')
+  await expect(firstCell.locator('[data-corner-slot="top-right"]')).toHaveText('3')
+  await expect(firstCell.locator('[data-corner-slot="bottom-left"]')).toHaveText(
+    '5',
+  )
+
+  await page.getByText('Center', { exact: true }).click()
+  await firstCell.click()
+  await page.keyboard.press('2')
+  await page.keyboard.press('9')
+  await expect(firstCell.locator('.sudoku-grid__center-marks')).toHaveText('2 9')
+  await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveText('1')
+
+  await page.getByText('Standard', { exact: true }).click()
+  await expect(firstCell.locator('[data-digit="1"]')).toHaveText('1')
+  await expect(firstCell.locator('[data-digit="9"]')).toHaveText('9')
+  await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
+
+  await page.getByText('Number', { exact: true }).click()
+  await firstCell.click()
+  await page.keyboard.press('8')
+  await expect(firstCell).toHaveText('8')
+  await page.keyboard.press('8')
+  await expect(firstCell.locator('[data-digit="1"]')).toHaveText('1')
+  await expect(firstCell.locator('[data-digit="9"]')).toHaveText('9')
+})
