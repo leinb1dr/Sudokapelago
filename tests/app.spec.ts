@@ -227,7 +227,7 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
   await expect(page.getByRole('radio', { name: 'Pencil', exact: true })).toBeChecked()
   await expect(page.getByText('Pencil mark style')).toBeVisible()
 
-  await page.getByRole('radio', { name: 'Corner/Center', exact: true }).click()
+  await page.getByText('Corner/Center', { exact: true }).click()
   await expect(page.getByText('Corner or center')).toBeVisible()
   await expect(page.getByRole('radio', { name: 'Corner', exact: true })).toBeChecked()
 
