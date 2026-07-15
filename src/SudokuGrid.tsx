@@ -1,12 +1,24 @@
 import './SudokuGrid.css'
 import { useRef, useState } from 'react'
+import SudokuCellContent from './SudokuCell'
 import {
   BOX_SIZE,
   CELL_COUNT,
   GRID_SIZE,
   moveCellIndex,
 } from './sudoku/grid'
-import type { Board, CellValue } from './sudoku/types'
+import {
+  clearVisiblePencilMarks,
+  getCellAccessibleName,
+  toggleDigitValue,
+  togglePencilMark,
+  updatePencilBoardCell,
+  type CornerCenterMode,
+  type EntryMode,
+  type PencilBoard,
+  type PencilStyle,
+} from './sudoku/pencilMarks'
+import type { Board, CellValue, Digit } from './sudoku/types'
 
 const VALID_CELL_VALUE_PATTERN = /^[1-9]$/
 
@@ -30,7 +42,12 @@ const NAVIGATION_KEYS: Readonly<
 interface SudokuGridProps {
   board: Board
   givenCells?: readonly boolean[]
+  pencilBoard: PencilBoard
+  entryMode: EntryMode
+  pencilStyle: PencilStyle
+  cornerCenterMode: CornerCenterMode
   onBoardChange: (board: Board) => void
+  onPencilBoardChange: (pencilBoard: PencilBoard) => void
 }
 
 function getCellClassName(
@@ -73,7 +90,16 @@ function getGivenCells(puzzle?: Board): readonly boolean[] {
     Array<boolean>(CELL_COUNT).fill(false)
 }
 
-function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
+function SudokuGrid({
+  board,
+  givenCells,
+  pencilBoard,
+  entryMode,
+  pencilStyle,
+  cornerCenterMode,
+  onBoardChange,
+  onPencilBoardChange,
+}: SudokuGridProps) {
   const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(null)
   const cellRefs = useRef<(HTMLDivElement | null)[]>([])
   const lockedCells = givenCells ?? getGivenCells()
@@ -114,6 +140,56 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
     )
   }
 
+  function handleDigitInput(cellIndex: number, digit: Digit) {
+    if (lockedCells[cellIndex]) {
+      return
+    }
+
+    if (entryMode === 'digit') {
+      updateCellValue(cellIndex, toggleDigitValue(board[cellIndex], digit))
+      return
+    }
+
+    if (board[cellIndex] !== 0) {
+      return
+    }
+
+    const nextMarks = togglePencilMark(
+      pencilBoard[cellIndex],
+      digit,
+      pencilStyle,
+      cornerCenterMode,
+    )
+    onPencilBoardChange(
+      updatePencilBoardCell(pencilBoard, cellIndex, nextMarks),
+    )
+  }
+
+  function handleClearInput(cellIndex: number) {
+    if (lockedCells[cellIndex]) {
+      return
+    }
+
+    if (board[cellIndex] !== 0) {
+      updateCellValue(cellIndex, 0)
+      return
+    }
+
+    if (entryMode === 'pencil') {
+      onPencilBoardChange(
+        updatePencilBoardCell(
+          pencilBoard,
+          cellIndex,
+          clearVisiblePencilMarks(
+            pencilBoard[cellIndex],
+            pencilStyle,
+            cornerCenterMode,
+          ),
+        ),
+      )
+    }
+  }
+
   return (
     <div className="sudoku-grid" role="grid" aria-label="Sudoku grid">
       {Array.from({ length: GRID_SIZE }).map((_, rowIndex) => (
@@ -121,6 +197,7 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
           {Array.from({ length: GRID_SIZE }).map((_, columnIndex) => {
             const cellIndex = rowIndex * GRID_SIZE + columnIndex
             const cellValue = board[cellIndex]
+            const cellMarks = pencilBoard[cellIndex]
             const cellDescription = `row ${rowIndex + 1} column ${columnIndex + 1}`
             const isSelected = selectedCellIndex === cellIndex
             const isGiven = lockedCells[cellIndex]
@@ -130,11 +207,13 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
                 ref={(element) => {
                   cellRefs.current[cellIndex] = element
                 }}
-                aria-label={
-                  cellValue
-                    ? `${isGiven ? 'Given cell' : 'Cell'} ${cellDescription} value ${cellValue}`
-                    : `Empty cell ${cellDescription}`
-                }
+                aria-label={getCellAccessibleName({
+                  value: cellValue,
+                  marks: cellMarks,
+                  pencilStyle,
+                  isGiven,
+                  cellDescription,
+                })}
                 aria-readonly={isGiven}
                 aria-selected={isSelected}
                 className={getCellClassName(
@@ -157,21 +236,25 @@ function SudokuGrid({ board, givenCells, onBoardChange }: SudokuGridProps) {
                   }
 
                   if (VALID_CELL_VALUE_PATTERN.test(event.key)) {
-                    updateCellValue(
+                    handleDigitInput(
                       selectedCellIndex ?? cellIndex,
-                      Number(event.key) as CellValue,
+                      Number(event.key) as Digit,
                     )
                   } else if (
                     event.key === 'Backspace' ||
                     event.key === 'Delete'
                   ) {
-                    updateCellValue(selectedCellIndex ?? cellIndex, 0)
+                    handleClearInput(selectedCellIndex ?? cellIndex)
                   }
                 }}
                 role="gridcell"
                 tabIndex={selectedCellIndex === cellIndex ? 0 : -1}
               >
-                {cellValue || ''}
+                <SudokuCellContent
+                  marks={cellMarks}
+                  pencilStyle={pencilStyle}
+                  value={cellValue}
+                />
               </div>
             )
           })}

@@ -2,9 +2,17 @@ import { Client } from 'archipelago.js'
 import { useEffect, useState } from 'react'
 import './App.css'
 import DifficultyPicker from './DifficultyPicker'
+import EntryModeControls from './EntryModeControls'
 import SudokuGrid from './SudokuGrid'
 import { solveWithHumanTechniques } from './sudoku/humanSolver'
 import { logHumanSolveResult } from './sudoku/solveStepLog'
+import {
+  createEmptyPencilBoard,
+  type CornerCenterMode,
+  type EntryMode,
+  type PencilBoard,
+  type PencilStyle,
+} from './sudoku/pencilMarks'
 import { createSudokuPuzzle } from './sudoku/setter'
 import { CELL_COUNT } from './sudoku/grid'
 import type { Board, Difficulty, SudokuPuzzle } from './sudoku/types'
@@ -22,11 +30,19 @@ function App() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const [puzzle, setPuzzle] = useState<SudokuPuzzle | null>(null)
   const [board, setBoard] = useState<Board>(() => createEmptyBoard())
+  const [pencilBoard, setPencilBoard] = useState<PencilBoard>(() =>
+    createEmptyPencilBoard(),
+  )
+  const [entryMode, setEntryMode] = useState<EntryMode>('digit')
+  const [pencilStyle, setPencilStyle] = useState<PencilStyle>('standard')
+  const [cornerCenterMode, setCornerCenterMode] =
+    useState<CornerCenterMode>('corner')
   const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
     if (puzzle) {
       setBoard([...puzzle.puzzle])
+      setPencilBoard(createEmptyPencilBoard())
     }
   }, [puzzle])
 
@@ -105,10 +121,24 @@ function App() {
           </p>
         )}
 
+        <EntryModeControls
+          cornerCenterMode={cornerCenterMode}
+          entryMode={entryMode}
+          onCornerCenterModeChange={setCornerCenterMode}
+          onEntryModeChange={setEntryMode}
+          onPencilStyleChange={setPencilStyle}
+          pencilStyle={pencilStyle}
+        />
+
         <SudokuGrid
           board={board}
+          cornerCenterMode={cornerCenterMode}
+          entryMode={entryMode}
           givenCells={puzzle?.puzzle.map((value) => value !== 0)}
           onBoardChange={setBoard}
+          onPencilBoardChange={setPencilBoard}
+          pencilBoard={pencilBoard}
+          pencilStyle={pencilStyle}
         />
       </section>
 
