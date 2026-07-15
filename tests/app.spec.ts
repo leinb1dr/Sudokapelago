@@ -215,10 +215,10 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
   const grid = page.getByRole('grid', { name: 'Sudoku grid' })
   const firstCell = grid.getByRole('gridcell').first()
 
-  await expect(page.getByRole('radio', { name: 'Number' })).toBeChecked()
+  await expect(page.getByRole('radio', { name: 'Number', exact: true })).toBeChecked()
 
   await page.keyboard.press('Tab')
-  await expect(page.getByRole('radio', { name: 'Pencil' })).toBeChecked()
+  await expect(page.getByRole('radio', { name: 'Pencil', exact: true })).toBeChecked()
   await expect(page.getByText('Pencil mark style')).toBeVisible()
 
   await firstCell.click()
@@ -226,24 +226,26 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
   await expect(firstCell.locator('[data-digit="1"]')).toHaveText('1')
 
   await page.keyboard.down('Shift')
-  await expect(page.getByRole('radio', { name: 'Corner/Center' })).toBeChecked()
+  await expect(
+    page.getByRole('radio', { name: 'Corner/Center', exact: true }),
+  ).toBeChecked()
   await expect(page.getByText('Corner or center')).toBeVisible()
-  await expect(page.getByRole('radio', { name: 'Corner' })).toBeChecked()
+  await expect(page.getByRole('radio', { name: 'Corner', exact: true })).toBeChecked()
 
   await firstCell.click()
   await page.keyboard.press('5')
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveText('5')
 
   await page.keyboard.press('Control')
-  await expect(page.getByRole('radio', { name: 'Center' })).toBeChecked()
+  await expect(page.getByRole('radio', { name: 'Center', exact: true })).toBeChecked()
   await page.keyboard.press('2')
   await expect(firstCell.locator('.sudoku-grid__center-marks')).toHaveText('2')
 
   await page.keyboard.up('Shift')
-  await expect(page.getByRole('radio', { name: 'Standard' })).toBeChecked()
+  await expect(page.getByRole('radio', { name: 'Standard', exact: true })).toBeChecked()
   await expect(firstCell.locator('[data-digit="1"]')).toHaveText('1')
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
 
   await page.keyboard.press('Tab')
-  await expect(page.getByRole('radio', { name: 'Number' })).toBeChecked()
+  await expect(page.getByRole('radio', { name: 'Number', exact: true })).toBeChecked()
 })
