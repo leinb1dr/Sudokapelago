@@ -46,7 +46,7 @@
 
 .sudoku-grid__standard-marks {
   position: absolute;
-  inset: 0.12rem;
+  inset: 0.3rem;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -63,7 +63,7 @@
 
 .sudoku-grid__corner-marks {
   position: absolute;
-  inset: 0.1rem;
+  inset: 0.3rem;
   pointer-events: none;
 }
 

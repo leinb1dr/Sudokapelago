@@ -172,6 +172,12 @@ test('supports standard and corner/center pencil marks with independent styles',
   await expect(firstCell).toHaveAccessibleName(
     'Empty cell row 1 column 1 with standard pencil marks 1 9',
   )
+  const standardInset = await firstCell
+    .locator('.sudoku-grid__standard-marks')
+    .evaluate((element) => getComputedStyle(element).inset)
+  expect(standardInset.split(/\s+/).every((value) => Number.parseFloat(value) >= 4.8)).toBe(
+    true,
+  )
 
   await page.getByText('Corner/Center', { exact: true }).click()
   await expect(page.getByText('Corner or center')).toBeVisible()
