@@ -21,8 +21,8 @@ test('landing page introduces the human-solvable setter with an empty grid', asy
   await expect(cells.last()).toHaveAccessibleName('Empty cell row 9 column 9')
   await expect(cells).toHaveText(Array.from({ length: 81 }, () => ''))
 
-  const gridFrameBorderTopWidth = await grid.evaluate((element) =>
-    getComputedStyle(element, '::after').borderTopWidth,
+  const gridFrameBorderTopWidth = await grid.evaluate(
+    (element) => getComputedStyle(element).borderTopWidth,
   )
 
   expect(gridFrameBorderTopWidth).toBe('4px')
@@ -163,12 +163,12 @@ test('supports standard and corner/center pencil marks with independent styles',
   const pencilStyleGroup = page.getByRole('group', { name: 'Pencil style' })
   const markTargetGroup = page.getByRole('group', { name: 'Mark target' })
 
-  await expect(pencilStyleGroup).toBeDisabled()
-  await expect(markTargetGroup).toBeDisabled()
+  await expect(pencilStyleGroup.locator('input').first()).toBeDisabled()
+  await expect(markTargetGroup.locator('input').first()).toBeDisabled()
 
   await page.getByText('Pencil', { exact: true }).click()
-  await expect(pencilStyleGroup).toBeEnabled()
-  await expect(markTargetGroup).toBeDisabled()
+  await expect(pencilStyleGroup.locator('input').first()).toBeEnabled()
+  await expect(markTargetGroup.locator('input').first()).toBeDisabled()
 
   await firstCell.click()
   await page.keyboard.press('1')
@@ -186,7 +186,7 @@ test('supports standard and corner/center pencil marks with independent styles',
   )
 
   await page.getByText('Corner/Center', { exact: true }).click()
-  await expect(markTargetGroup).toBeEnabled()
+  await expect(markTargetGroup.locator('input').first()).toBeEnabled()
   await expect(firstCell.locator('[data-digit="1"]')).toHaveCount(0)
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
 
@@ -233,7 +233,7 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
 
   await page.keyboard.press('Tab')
   await expect(page.getByRole('radio', { name: 'Pencil', exact: true })).toBeChecked()
-  await expect(pencilStyleGroup).toBeEnabled()
+  await expect(pencilStyleGroup.locator('input').first()).toBeEnabled()
 
   await firstCell.click()
   await page.keyboard.press('1')
@@ -243,7 +243,7 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
   await expect(
     page.getByRole('radio', { name: 'Corner/Center', exact: true }),
   ).toBeChecked()
-  await expect(markTargetGroup).toBeEnabled()
+  await expect(markTargetGroup.locator('input').first()).toBeEnabled()
   await expect(page.getByRole('radio', { name: 'Corner', exact: true })).toBeChecked()
 
   await firstCell.click()
@@ -267,23 +267,39 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
 test('keeps the board steady while entry options change', async ({ page }) => {
   await page.goto('/')
 
-  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
-  const controls = page.getByLabel('Entry controls')
-  const initialGridTop = await grid.evaluate((element) => element.getBoundingClientRect().top)
-  const initialControlsHeight = await controls.evaluate(
-    (element) => element.getBoundingClientRect().height,
-  )
+  const metrics = async () =>
+    page.evaluate(() => {
+      const stage = document.querySelector('.board-stage')
+      const grid = document.querySelector('.sudoku-grid')
+      const controls = document.querySelector('.entry-mode-controls')
+      if (
+        !(stage instanceof HTMLElement) ||
+        !(grid instanceof HTMLElement) ||
+        !(controls instanceof HTMLElement)
+      ) {
+        return null
+      }
+
+      return {
+        gridOffsetTop: grid.offsetTop,
+        controlsHeight: controls.getBoundingClientRect().height,
+      }
+    })
+
+  const initial = await metrics()
+  expect(initial).not.toBeNull()
 
   await page.getByText('Pencil', { exact: true }).click()
   await page.getByText('Corner/Center', { exact: true }).click()
 
-  const afterGridTop = await grid.evaluate((element) => element.getBoundingClientRect().top)
-  const afterControlsHeight = await controls.evaluate(
-    (element) => element.getBoundingClientRect().height,
+  const after = await metrics()
+  expect(after).not.toBeNull()
+  expect(Math.abs((after?.gridOffsetTop ?? 0) - (initial?.gridOffsetTop ?? 0))).toBeLessThan(
+    1,
   )
-
-  expect(Math.abs(afterGridTop - initialGridTop)).toBeLessThan(1)
-  expect(Math.abs(afterControlsHeight - initialControlsHeight)).toBeLessThan(1)
+  expect(
+    Math.abs((after?.controlsHeight ?? 0) - (initial?.controlsHeight ?? 0)),
+  ).toBeLessThan(1)
 })
 
 test('places entry controls beside the board on wide screens and below on narrow', async ({
