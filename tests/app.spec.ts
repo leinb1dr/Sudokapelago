@@ -418,6 +418,7 @@ test('long-press on a cell pans the overlapping viewport', async ({ page }) => {
     .getByRole('grid', { name: 'Sudoku grid 1' })
     .locator('[role="gridcell"]')
     .first()
+  await cell.scrollIntoViewIfNeeded()
   const box = await cell.boundingBox()
   expect(box).not.toBeNull()
 
