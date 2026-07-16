@@ -1,4 +1,5 @@
 import './PuzzleMinimap.css'
+import { getVisibleContentRect } from './puzzleViewportMath'
 import type { PuzzleViewportTransform } from './PuzzleViewport'
 import type { OverlapTopology } from './sudoku/overlapping'
 
@@ -33,17 +34,13 @@ function PuzzleMinimap({
   const cellW = contentWidth / bounds.width
   const cellH = contentHeight / bounds.height
 
-  // Viewport center is at world origin + translate, with content centered.
-  // Content is drawn with its top-left at (-contentWidth/2, -contentHeight/2)
-  // in the centered world; approximate visible rect in content coordinates:
-  const visibleWidth = viewportWidth / transform.scale
-  const visibleHeight = viewportHeight / transform.scale
-  const contentCenterX = contentWidth / 2
-  const contentCenterY = contentHeight / 2
-  const visibleLeft =
-    contentCenterX - transform.translateX / transform.scale - visibleWidth / 2
-  const visibleTop =
-    contentCenterY - transform.translateY / transform.scale - visibleHeight / 2
+  const visible = getVisibleContentRect(
+    transform,
+    contentWidth,
+    contentHeight,
+    viewportWidth,
+    viewportHeight,
+  )
 
   return (
     <div
@@ -69,10 +66,10 @@ function PuzzleMinimap({
       <div
         className="puzzle-minimap__viewport"
         style={{
-          left: visibleLeft * fit,
-          top: visibleTop * fit,
-          width: visibleWidth * fit,
-          height: visibleHeight * fit,
+          left: visible.left * fit,
+          top: visible.top * fit,
+          width: visible.width * fit,
+          height: visible.height * fit,
         }}
       />
     </div>

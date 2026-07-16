@@ -108,4 +108,49 @@ describe('OverlappingSudokuBoard', () => {
     const nextBoard = onBoardChange.mock.calls[0]![0] as Map<string, number>
     expect([...nextBoard.values()]).toEqual([5])
   })
+
+  it('pans the puzzle viewport when keyboard nav reaches a cell outside view', async () => {
+    const user = userEvent.setup()
+    const topology = buildSpiralTopology(1, 5)
+    const board = createEmptyGlobalBoard()
+
+    render(
+      <OverlappingSudokuBoard
+        board={board}
+        cornerCenterMode="corner"
+        entryMode="digit"
+        givenBoard={createEmptyGlobalBoard()}
+        onBoardChange={vi.fn()}
+        pencilStyle="standard"
+        topology={topology}
+      />,
+    )
+
+    const world = document.querySelector('.puzzle-viewport__world') as HTMLElement
+    expect(world).not.toBeNull()
+
+    // Zoom in so only a fraction of the large board fits.
+    await user.click(screen.getByRole('button', { name: 'Zoom in' }))
+    await user.click(screen.getByRole('button', { name: 'Zoom in' }))
+    await user.click(screen.getByRole('button', { name: 'Zoom in' }))
+    await user.click(screen.getByRole('button', { name: 'Zoom in' }))
+
+    const transformBefore = world.style.transform
+
+    // Top-left cell is visible at default pan; walk far right off the edge.
+    const start = screen.getByRole('gridcell', {
+      name: 'Empty cell row 1 column 1',
+    })
+    await user.click(start)
+
+    for (let i = 0; i < 20; i += 1) {
+      await user.keyboard('{ArrowRight}')
+    }
+
+    const transformAfter = world.style.transform
+    expect(transformAfter).not.toBe(transformBefore)
+    expect(transformAfter).toMatch(/translate\(/)
+    // Panning right moves the world left (negative translateX contribution).
+    expect(transformAfter).not.toEqual(transformBefore)
+  })
 })

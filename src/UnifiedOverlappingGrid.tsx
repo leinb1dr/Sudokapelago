@@ -62,6 +62,8 @@ interface UnifiedOverlappingGridProps {
   cellSizePx: number
   onBoardChange: (board: GlobalBoard) => void
   onPencilMapChange: (pencilMap: GlobalPencilMap) => void
+  /** Called after a cell is selected so the parent can pan it into view. */
+  onCellSelected?: (x: number, y: number) => void
 }
 
 function edgeClass(edge: 'right' | 'bottom', style: CellEdgeStyle): string {
@@ -107,6 +109,7 @@ function UnifiedOverlappingGrid({
   cellSizePx,
   onBoardChange,
   onPencilMapChange,
+  onCellSelected,
 }: UnifiedOverlappingGridProps) {
   const occupied = buildOccupiedCellKeys(topology)
   const { minX, minY, width, height } = topology.bounds
@@ -116,7 +119,10 @@ function UnifiedOverlappingGrid({
   function selectCell(x: number, y: number) {
     const key = pointKey(x, y)
     setSelectedKey(key)
-    cellRefs.current.get(key)?.focus()
+    // preventScroll: the board uses a transform viewport; native focus scroll
+    // would move the page instead of panning the puzzle.
+    cellRefs.current.get(key)?.focus({ preventScroll: true })
+    onCellSelected?.(x, y)
   }
 
   function navigateFromCell(

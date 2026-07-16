@@ -4,6 +4,10 @@ import PuzzleMinimap from './PuzzleMinimap'
 import PuzzleViewport, {
   type PuzzleViewportTransform,
 } from './PuzzleViewport'
+import {
+  cellContentRect,
+  transformToShowRect,
+} from './puzzleViewportMath'
 import UnifiedOverlappingGrid, {
   type GlobalPencilMap,
 } from './UnifiedOverlappingGrid'
@@ -16,6 +20,9 @@ import type {
 
 /** CSS pixels per Sudoku cell in the unscaled world. */
 export const OVERLAP_CELL_PX = 36
+
+/** Extra content-space margin when keyboard-nav pans a cell into view. */
+const ENSURE_VISIBLE_PADDING_PX = OVERLAP_CELL_PX / 2
 
 interface OverlappingSudokuBoardProps {
   topology: OverlapTopology
@@ -44,9 +51,19 @@ function OverlappingSudokuBoard({
   const [pencilMap, setPencilMap] = useState<GlobalPencilMap>(() => new Map())
   const viewportMeasureRef = useRef<HTMLDivElement>(null)
   const [viewportSize, setViewportSize] = useState({ width: 480, height: 480 })
+  const transformRef = useRef(transform)
+  const viewportSizeRef = useRef(viewportSize)
 
   const contentWidth = topology.bounds.width * OVERLAP_CELL_PX
   const contentHeight = topology.bounds.height * OVERLAP_CELL_PX
+
+  useEffect(() => {
+    transformRef.current = transform
+  }, [transform])
+
+  useEffect(() => {
+    viewportSizeRef.current = viewportSize
+  }, [viewportSize])
 
   useEffect(() => {
     setPencilMap(new Map())
@@ -75,6 +92,30 @@ function OverlappingSudokuBoard({
     }
   }, [topology])
 
+  function ensureCellVisible(x: number, y: number) {
+    const current = transformRef.current
+    const size = viewportSizeRef.current
+    const cell = cellContentRect(
+      x,
+      y,
+      topology.bounds.minX,
+      topology.bounds.minY,
+      OVERLAP_CELL_PX,
+    )
+    const next = transformToShowRect(
+      current,
+      contentWidth,
+      contentHeight,
+      size.width,
+      size.height,
+      cell,
+      ENSURE_VISIBLE_PADDING_PX,
+    )
+    if (next !== current) {
+      setTransform(next)
+    }
+  }
+
   return (
     <div className="overlapping-board" ref={viewportMeasureRef}>
       <div className="overlapping-board__stage">
@@ -95,6 +136,7 @@ function OverlappingSudokuBoard({
               entryMode={entryMode}
               givenBoard={givenBoard}
               onBoardChange={onBoardChange}
+              onCellSelected={ensureCellVisible}
               onPencilMapChange={setPencilMap}
               pencilMap={pencilMap}
               pencilStyle={pencilStyle}

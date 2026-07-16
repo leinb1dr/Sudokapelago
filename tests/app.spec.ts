@@ -509,3 +509,72 @@ test('places entry controls beside the overlapping board on wide screens and bel
   await expect(controls).toBeVisible()
   await expect(page.getByRole('region', { name: 'Puzzle viewport' })).toBeVisible()
 })
+
+test('keyboard navigation pans the overlapping viewport instead of the page', async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  await page.goto('/')
+
+  await page.getByRole('radio', { name: 'Overlapping' }).click()
+  await page.getByLabel('Box overlap').selectOption('1')
+  await page.getByLabel('Grid count').fill('5')
+  await page
+    .getByRole('button', { name: /Generate 1-box × 5-grid easy puzzle/ })
+    .click()
+
+  await expect(page.getByRole('status')).toContainText(
+    /easy puzzle · \d+ clues · \d+ cells tested · 5 grids · 1-box overlap/,
+    { timeout: 90_000 },
+  )
+
+  const viewport = page.getByRole('region', { name: 'Puzzle viewport' })
+  const world = page.locator('.puzzle-viewport__world')
+  await expect(viewport).toBeVisible()
+
+  // Zoom in so navigating across the board must pan to keep the cell in view.
+  for (let i = 0; i < 6; i += 1) {
+    await page.getByRole('button', { name: 'Zoom in' }).click()
+  }
+
+  const transformBefore = await world.evaluate((element) => {
+    return getComputedStyle(element).transform
+  })
+  const scrollBefore = await page.evaluate(() => window.scrollY)
+
+  const start = page
+    .getByRole('grid', { name: 'Overlapping Sudoku grid' })
+    .locator('[role="gridcell"]')
+    .first()
+  await start.click()
+
+  for (let i = 0; i < 16; i += 1) {
+    await page.keyboard.press('ArrowRight')
+  }
+
+  const transformAfter = await world.evaluate((element) => {
+    return getComputedStyle(element).transform
+  })
+  const scrollAfter = await page.evaluate(() => window.scrollY)
+
+  expect(transformAfter).not.toBe(transformBefore)
+  expect(scrollAfter).toBe(scrollBefore)
+
+  // Focused cell remains inside the clipped puzzle viewport.
+  const inside = await page.evaluate(() => {
+    const cell = document.activeElement
+    const clip = document.querySelector('.puzzle-viewport')
+    if (!(cell instanceof HTMLElement) || !(clip instanceof HTMLElement)) {
+      return false
+    }
+    const cellBox = cell.getBoundingClientRect()
+    const clipBox = clip.getBoundingClientRect()
+    return (
+      cellBox.left >= clipBox.left - 1 &&
+      cellBox.right <= clipBox.right + 1 &&
+      cellBox.top >= clipBox.top - 1 &&
+      cellBox.bottom <= clipBox.bottom + 1
+    )
+  })
+  expect(inside).toBe(true)
+})
