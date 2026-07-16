@@ -21,4 +21,15 @@ describe('overlapping UI styles', () => {
     expect(css).toContain('puzzle-minimap__viewport')
     expect(css).toContain('puzzle-minimap__grid')
   })
+
+  it('draws logical board outlines on a unified lattice', () => {
+    const css = readFileSync(
+      resolve(process.cwd(), 'src/UnifiedOverlappingGrid.css'),
+      'utf8',
+    )
+    expect(css).toContain('unified-grid__board-outline')
+    expect(css).toMatch(/border:\s*4px solid/)
+    expect(css).toContain('unified-grid__cell--empty')
+    expect(css).toContain('unified-grid__cell--right-box')
+  })
 })

@@ -371,8 +371,12 @@ test('generates an overlapping puzzle with pan/zoom viewport and minimap', async
   )
 
   await expect(page.getByRole('region', { name: 'Puzzle viewport' })).toBeVisible()
-  await expect(page.getByRole('grid', { name: 'Sudoku grid 1' })).toBeVisible()
-  await expect(page.getByRole('grid', { name: 'Sudoku grid 2' })).toBeVisible()
+  await expect(
+    page.getByRole('grid', { name: 'Overlapping Sudoku grid' }),
+  ).toBeVisible()
+  await expect(page.getByRole('grid')).toHaveCount(1)
+  await expect(page.locator('.sudoku-grid')).toHaveCount(0)
+  await expect(page.locator('.unified-grid__board-outline')).toHaveCount(2)
   await expect(page.locator('.puzzle-minimap')).toBeVisible()
   await expect(page.locator('canvas')).toHaveCount(0)
 
@@ -382,7 +386,7 @@ test('generates an overlapping puzzle with pan/zoom viewport and minimap', async
   await page.getByRole('button', { name: 'Zoom in' }).click()
   await expect(page.getByText(/\d+%/)).toBeVisible()
 
-  const grid = page.getByRole('grid', { name: 'Sudoku grid 1' })
+  const grid = page.getByRole('grid', { name: 'Overlapping Sudoku grid' })
   const editable = grid.locator('[role="gridcell"][aria-readonly="false"]').first()
   await editable.click()
   await page.keyboard.press('5')

@@ -17,20 +17,8 @@
   position: relative;
 }
 
-.overlapping-board__grid {
-  position: absolute;
-  box-sizing: border-box;
-}
-
-.overlapping-board__grid .sudoku-grid {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+.overlapping-board__world .unified-grid {
   box-shadow: 0 0.65rem 1.5rem rgba(0, 0, 0, 0.14);
-}
-
-.overlapping-board__grid--linked .sudoku-grid {
-  box-shadow: 0 0.45rem 1.1rem rgba(80, 88, 229, 0.18);
 }
 
 @media (min-width: 52rem) {

@@ -70,3 +70,14 @@ export {
 } from './generator'
 
 export { createWorkerFillGrid } from './workerClient'
+
+export {
+  buildOccupiedCellKeys,
+  findNextOccupiedCell,
+  getLogicalBoardRect,
+  getUnifiedCellBorders,
+  isBoardPerimeterHorizontal,
+  isBoardPerimeterVertical,
+  isCellOccupied,
+} from './unifiedLayout'
+export type { CellEdgeStyle, UnifiedCellBorders } from './unifiedLayout'
