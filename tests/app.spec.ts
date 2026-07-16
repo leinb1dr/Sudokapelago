@@ -532,6 +532,8 @@ test('keyboard navigation pans the overlapping viewport instead of the page', as
   const world = page.locator('.puzzle-viewport__world')
   await expect(viewport).toBeVisible()
 
+  await page.getByRole('button', { name: 'Reset view' }).click()
+
   // Zoom in so navigating across the board must pan to keep the cell in view.
   for (let i = 0; i < 6; i += 1) {
     await page.getByRole('button', { name: 'Zoom in' }).click()
@@ -542,13 +544,36 @@ test('keyboard navigation pans the overlapping viewport instead of the page', as
   })
   const scrollBefore = await page.evaluate(() => window.scrollY)
 
-  const start = page
-    .getByRole('grid', { name: 'Overlapping Sudoku grid' })
-    .locator('[role="gridcell"]')
-    .first()
-  await start.click()
+  // Prefer a cell already inside the clipped viewport (zoom may hide corners).
+  const selected = await page.evaluate(() => {
+    const clip = document.querySelector('.puzzle-viewport')
+    if (!(clip instanceof HTMLElement)) {
+      return false
+    }
+    const clipBox = clip.getBoundingClientRect()
+    const cells = document.querySelectorAll(
+      '[role="grid"][aria-label="Overlapping Sudoku grid"] [role="gridcell"]',
+    )
+    for (const cell of cells) {
+      if (!(cell instanceof HTMLElement)) {
+        continue
+      }
+      const box = cell.getBoundingClientRect()
+      const inside =
+        box.left >= clipBox.left &&
+        box.right <= clipBox.right &&
+        box.top >= clipBox.top &&
+        box.bottom <= clipBox.bottom
+      if (inside) {
+        cell.click()
+        return true
+      }
+    }
+    return false
+  })
+  expect(selected).toBe(true)
 
-  for (let i = 0; i < 16; i += 1) {
+  for (let i = 0; i < 20; i += 1) {
     await page.keyboard.press('ArrowRight')
   }
 
