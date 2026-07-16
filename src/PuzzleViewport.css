@@ -24,6 +24,7 @@
 
 .puzzle-viewport--panning {
   cursor: grabbing;
+  box-shadow: inset 0 0 0 2px rgba(80, 88, 229, 0.35);
 }
 
 .puzzle-viewport__world {
