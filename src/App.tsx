@@ -128,25 +128,27 @@ function App() {
           </p>
         )}
 
-        <EntryModeControls
-          cornerCenterMode={effectiveCornerCenterMode}
-          entryMode={entryMode}
-          onCornerCenterModeChange={setCornerCenterMode}
-          onEntryModeChange={setEntryMode}
-          onPencilStyleChange={setPencilStyle}
-          pencilStyle={pencilStyle}
-        />
+        <div className="board-stage">
+          <SudokuGrid
+            board={board}
+            cornerCenterMode={effectiveCornerCenterMode}
+            entryMode={entryMode}
+            givenCells={puzzle?.puzzle.map((value) => value !== 0)}
+            onBoardChange={setBoard}
+            onPencilBoardChange={setPencilBoard}
+            pencilBoard={pencilBoard}
+            pencilStyle={pencilStyle}
+          />
 
-        <SudokuGrid
-          board={board}
-          cornerCenterMode={effectiveCornerCenterMode}
-          entryMode={entryMode}
-          givenCells={puzzle?.puzzle.map((value) => value !== 0)}
-          onBoardChange={setBoard}
-          onPencilBoardChange={setPencilBoard}
-          pencilBoard={pencilBoard}
-          pencilStyle={pencilStyle}
-        />
+          <EntryModeControls
+            cornerCenterMode={effectiveCornerCenterMode}
+            entryMode={entryMode}
+            onCornerCenterModeChange={setCornerCenterMode}
+            onEntryModeChange={setEntryMode}
+            onPencilStyleChange={setPencilStyle}
+            pencilStyle={pencilStyle}
+          />
+        </div>
       </section>
 
       <section className="status">

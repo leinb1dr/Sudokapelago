@@ -128,10 +128,16 @@ describe('App', () => {
       (screen.getByRole('radio', { name: 'Pencil' }) as HTMLInputElement)
         .checked,
     ).toBe(true)
-    expect(screen.getByText('Pencil mark style')).toBeTruthy()
+    expect(
+      (screen.getByRole('group', { name: 'Pencil style' }) as HTMLFieldSetElement)
+        .disabled,
+    ).toBe(false)
 
     await user.click(screen.getByRole('radio', { name: 'Corner/Center' }))
-    expect(screen.getByText('Corner or center')).toBeTruthy()
+    expect(
+      (screen.getByRole('group', { name: 'Mark target' }) as HTMLFieldSetElement)
+        .disabled,
+    ).toBe(false)
     expect(
       (screen.getByRole('radio', { name: 'Corner' }) as HTMLInputElement)
         .checked,

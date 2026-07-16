@@ -40,10 +40,14 @@ function EntryModeControls({
   onPencilStyleChange,
   onCornerCenterModeChange,
 }: EntryModeControlsProps) {
+  const pencilOptionsEnabled = entryMode === 'pencil'
+  const cornerCenterEnabled =
+    pencilOptionsEnabled && pencilStyle === 'corner-center'
+
   return (
-    <div className="entry-mode-controls">
+    <div className="entry-mode-controls" aria-label="Entry controls">
       <fieldset className="entry-mode-controls__group">
-        <legend>Entry mode</legend>
+        <legend>Entry</legend>
         <div className="entry-mode-controls__options">
           {ENTRY_MODES.map((mode) => (
             <label className="entry-mode-controls__option" key={mode}>
@@ -62,49 +66,59 @@ function EntryModeControls({
         </div>
       </fieldset>
 
-      {entryMode === 'pencil' ? (
-        <fieldset className="entry-mode-controls__group">
-          <legend>Pencil mark style</legend>
-          <div className="entry-mode-controls__options">
-            {PENCIL_STYLES.map((style) => (
-              <label className="entry-mode-controls__option" key={style}>
-                <input
-                  checked={pencilStyle === style}
-                  name="pencil-style"
-                  onChange={() => {
-                    onPencilStyleChange(style)
-                  }}
-                  type="radio"
-                  value={style}
-                />
-                <span>{PENCIL_STYLE_LABELS[style]}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ) : null}
+      <fieldset
+        className={
+          pencilOptionsEnabled
+            ? 'entry-mode-controls__group'
+            : 'entry-mode-controls__group entry-mode-controls__group--inactive'
+        }
+        disabled={!pencilOptionsEnabled}
+      >
+        <legend>Pencil style</legend>
+        <div className="entry-mode-controls__options">
+          {PENCIL_STYLES.map((style) => (
+            <label className="entry-mode-controls__option" key={style}>
+              <input
+                checked={pencilStyle === style}
+                name="pencil-style"
+                onChange={() => {
+                  onPencilStyleChange(style)
+                }}
+                type="radio"
+                value={style}
+              />
+              <span>{PENCIL_STYLE_LABELS[style]}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
-      {entryMode === 'pencil' && pencilStyle === 'corner-center' ? (
-        <fieldset className="entry-mode-controls__group">
-          <legend>Corner or center</legend>
-          <div className="entry-mode-controls__options">
-            {CORNER_CENTER_MODES.map((mode) => (
-              <label className="entry-mode-controls__option" key={mode}>
-                <input
-                  checked={cornerCenterMode === mode}
-                  name="corner-center-mode"
-                  onChange={() => {
-                    onCornerCenterModeChange(mode)
-                  }}
-                  type="radio"
-                  value={mode}
-                />
-                <span>{CORNER_CENTER_LABELS[mode]}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ) : null}
+      <fieldset
+        className={
+          cornerCenterEnabled
+            ? 'entry-mode-controls__group'
+            : 'entry-mode-controls__group entry-mode-controls__group--inactive'
+        }
+        disabled={!cornerCenterEnabled}
+      >
+        <legend>Mark target</legend>
+        <div className="entry-mode-controls__options">
+          {CORNER_CENTER_MODES.map((mode) => (
+            <label className="entry-mode-controls__option" key={mode}>
+              <input
+                checked={cornerCenterMode === mode}
+                name="corner-center-mode"
+                onChange={() => {
+                  onCornerCenterModeChange(mode)
+                }}
+                type="radio"
+                value={mode}
+              />
+              <span>{CORNER_CENTER_LABELS[mode]}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
     </div>
   )
 }

@@ -21,8 +21,8 @@ test('landing page introduces the human-solvable setter with an empty grid', asy
   await expect(cells.last()).toHaveAccessibleName('Empty cell row 9 column 9')
   await expect(cells).toHaveText(Array.from({ length: 81 }, () => ''))
 
-  const gridFrameBorderTopWidth = await grid.evaluate((element) =>
-    getComputedStyle(element, '::after').borderTopWidth,
+  const gridFrameBorderTopWidth = await grid.evaluate(
+    (element) => getComputedStyle(element).borderTopWidth,
   )
 
   expect(gridFrameBorderTopWidth).toBe('4px')
@@ -160,9 +160,15 @@ test('supports standard and corner/center pencil marks with independent styles',
 
   const grid = page.getByRole('grid', { name: 'Sudoku grid' })
   const firstCell = grid.getByRole('gridcell').first()
+  const pencilStyleGroup = page.getByRole('group', { name: 'Pencil style' })
+  const markTargetGroup = page.getByRole('group', { name: 'Mark target' })
+
+  await expect(pencilStyleGroup.locator('input').first()).toBeDisabled()
+  await expect(markTargetGroup.locator('input').first()).toBeDisabled()
 
   await page.getByText('Pencil', { exact: true }).click()
-  await expect(page.getByText('Pencil mark style')).toBeVisible()
+  await expect(pencilStyleGroup.locator('input').first()).toBeEnabled()
+  await expect(markTargetGroup.locator('input').first()).toBeDisabled()
 
   await firstCell.click()
   await page.keyboard.press('1')
@@ -180,7 +186,7 @@ test('supports standard and corner/center pencil marks with independent styles',
   )
 
   await page.getByText('Corner/Center', { exact: true }).click()
-  await expect(page.getByText('Corner or center')).toBeVisible()
+  await expect(markTargetGroup.locator('input').first()).toBeEnabled()
   await expect(firstCell.locator('[data-digit="1"]')).toHaveCount(0)
   await expect(firstCell.locator('[data-corner-slot="top-left"]')).toHaveCount(0)
 
@@ -220,15 +226,17 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
 
   const grid = page.getByRole('grid', { name: 'Sudoku grid' })
   const firstCell = grid.getByRole('gridcell').first()
+  const pencilStyleGroup = page.getByRole('group', { name: 'Pencil style' })
+  const markTargetGroup = page.getByRole('group', { name: 'Mark target' })
 
   await expect(page.getByRole('radio', { name: 'Number', exact: true })).toBeChecked()
 
   await page.keyboard.press('Tab')
   await expect(page.getByRole('radio', { name: 'Pencil', exact: true })).toBeChecked()
-  await expect(page.getByText('Pencil mark style')).toBeVisible()
+  await expect(pencilStyleGroup.locator('input').first()).toBeEnabled()
 
   await page.getByText('Corner/Center', { exact: true }).click()
-  await expect(page.getByText('Corner or center')).toBeVisible()
+  await expect(markTargetGroup.locator('input').first()).toBeEnabled()
   await expect(page.getByRole('radio', { name: 'Corner', exact: true })).toBeChecked()
 
   await firstCell.click()
@@ -256,4 +264,92 @@ test('switches mark modes with Tab, Control, and held Shift', async ({ page }) =
 
   await page.keyboard.press('Tab')
   await expect(page.getByRole('radio', { name: 'Number', exact: true })).toBeChecked()
+})
+
+test('keeps the board steady while entry options change', async ({ page }) => {
+  await page.goto('/')
+
+  const metrics = async () =>
+    page.evaluate(() => {
+      const stage = document.querySelector('.board-stage')
+      const grid = document.querySelector('.sudoku-grid')
+      const controls = document.querySelector('.entry-mode-controls')
+      if (
+        !(stage instanceof HTMLElement) ||
+        !(grid instanceof HTMLElement) ||
+        !(controls instanceof HTMLElement)
+      ) {
+        return null
+      }
+
+      return {
+        gridOffsetTop: grid.offsetTop,
+        controlsHeight: controls.getBoundingClientRect().height,
+      }
+    })
+
+  const initial = await metrics()
+  expect(initial).not.toBeNull()
+
+  await page.getByText('Pencil', { exact: true }).click()
+  await page.getByText('Corner/Center', { exact: true }).click()
+
+  const after = await metrics()
+  expect(after).not.toBeNull()
+  expect(Math.abs((after?.gridOffsetTop ?? 0) - (initial?.gridOffsetTop ?? 0))).toBeLessThan(
+    1,
+  )
+  expect(
+    Math.abs((after?.controlsHeight ?? 0) - (initial?.controlsHeight ?? 0)),
+  ).toBeLessThan(1)
+})
+
+test('places entry controls beside the board on wide screens and below on narrow', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1100, height: 800 })
+  await page.goto('/')
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid' })
+  const controls = page.getByLabel('Entry controls')
+
+  let layout = await page.evaluate(() => {
+    const board = document.querySelector('.sudoku-grid')
+    const panel = document.querySelector('.entry-mode-controls')
+    if (!(board instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+      return null
+    }
+
+    const boardBox = board.getBoundingClientRect()
+    const panelBox = panel.getBoundingClientRect()
+    return {
+      sideBySide: panelBox.left >= boardBox.right - 1,
+      below: panelBox.top >= boardBox.bottom - 1,
+    }
+  })
+
+  expect(layout?.sideBySide).toBe(true)
+  expect(layout?.below).toBe(false)
+
+  await page.setViewportSize({ width: 390, height: 800 })
+
+  layout = await page.evaluate(() => {
+    const board = document.querySelector('.sudoku-grid')
+    const panel = document.querySelector('.entry-mode-controls')
+    if (!(board instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+      return null
+    }
+
+    const boardBox = board.getBoundingClientRect()
+    const panelBox = panel.getBoundingClientRect()
+    return {
+      sideBySide: panelBox.left >= boardBox.right - 1,
+      below: panelBox.top >= boardBox.bottom - 1,
+    }
+  })
+
+  expect(layout?.sideBySide).toBe(false)
+  expect(layout?.below).toBe(true)
+  await expect(controls).toBeVisible()
+  await expect(grid).toBeVisible()
 })

@@ -1,10 +1,10 @@
 .app {
   max-width: 820px;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 3rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   text-align: center;
 }
 
@@ -27,10 +27,10 @@
   background: rgba(127, 127, 127, 0.08);
   border: 1px solid rgba(127, 127, 127, 0.2);
   border-radius: 12px;
-  padding: 2rem;
+  padding: 1.35rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .card h2 {
@@ -64,20 +64,27 @@
 .setter-controls {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .setter-actions {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+}
+
+.board-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.75rem;
 }
 
 .generate-button {
-  min-height: 3rem;
-  padding: 0.75rem 1.25rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 1rem;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #5058e5;
   color: #fff;
   cursor: pointer;
@@ -104,14 +111,15 @@
 }
 
 .debug-solve-button {
-  min-height: 2.75rem;
-  padding: 0.65rem 1.1rem;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.9rem;
   border: 1px solid rgba(80, 88, 229, 0.35);
-  border-radius: 10px;
+  border-radius: 8px;
   background: transparent;
   color: #5058e5;
   cursor: pointer;
   font: inherit;
+  font-size: 0.92rem;
   font-weight: 650;
   transition:
     background 120ms ease,
@@ -161,6 +169,43 @@
 .badge--off {
   background: #842029;
   color: #f8d7da;
+}
+
+@media (min-width: 52rem) {
+  .app {
+    max-width: 64rem;
+  }
+
+  .board-stage {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .board-stage .sudoku-grid {
+    flex: 0 1 32rem;
+    width: min(100%, 32rem);
+  }
+
+  .board-stage .entry-mode-controls {
+    flex: 0 0 11.5rem;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 11.5rem;
+    gap: 0.65rem;
+    position: sticky;
+    top: 1rem;
+  }
+
+  .board-stage .entry-mode-controls__group {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .board-stage .entry-mode-controls__options {
+    flex-direction: column;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

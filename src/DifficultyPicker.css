@@ -6,14 +6,18 @@
 
 .difficulty-picker legend {
   width: 100%;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.7rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #667085;
 }
 
 .difficulty-picker__options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
 }
 
 .difficulty-picker__option {
@@ -28,14 +32,14 @@
 }
 
 .difficulty-picker__option span {
-  min-height: 3.5rem;
-  padding: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.15rem;
+  gap: 0.1rem;
   border: 1px solid rgba(100, 108, 255, 0.28);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(100, 108, 255, 0.05);
   text-align: left;
   transition:
@@ -44,9 +48,14 @@
     transform 120ms ease;
 }
 
+.difficulty-picker__option strong {
+  font-size: 0.9rem;
+}
+
 .difficulty-picker__option small {
   color: #667085;
-  line-height: 1.3;
+  font-size: 0.68rem;
+  line-height: 1.25;
 }
 
 .difficulty-picker__option:hover span {
@@ -65,13 +74,26 @@
   outline-offset: 2px;
 }
 
-@media (max-width: 34rem) {
+@media (max-width: 40rem) {
   .difficulty-picker__options {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .difficulty-picker__option span {
+    min-height: 2.35rem;
+    padding: 0.35rem 0.4rem;
+  }
+
+  .difficulty-picker__option small {
+    display: none;
   }
 }
 
 @media (prefers-color-scheme: dark) {
+  .difficulty-picker legend {
+    color: #b8c0d4;
+  }
+
   .difficulty-picker__option small {
     color: #b8c0d4;
   }
