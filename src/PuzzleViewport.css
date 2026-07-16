@@ -1,0 +1,94 @@
+.puzzle-viewport-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.puzzle-viewport {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: min(70vh, 36rem);
+  overflow: hidden;
+  border: 1px solid rgba(127, 127, 127, 0.28);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(80, 88, 229, 0.08), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(33, 53, 71, 0.06), transparent 40%),
+    rgba(127, 127, 127, 0.05);
+  touch-action: none;
+  cursor: grab;
+}
+
+.puzzle-viewport--panning {
+  cursor: grabbing;
+}
+
+.puzzle-viewport__world {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.puzzle-viewport__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.puzzle-viewport__button {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba(80, 88, 229, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #5058e5;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.puzzle-viewport__button--wide {
+  min-width: 6.5rem;
+}
+
+.puzzle-viewport__button:hover {
+  background: rgba(80, 88, 229, 0.08);
+}
+
+.puzzle-viewport__button:focus-visible {
+  outline: 3px solid rgba(100, 108, 255, 0.35);
+  outline-offset: 2px;
+}
+
+.puzzle-viewport__zoom-label {
+  min-width: 3.25rem;
+  color: #667085;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.puzzle-viewport__hint {
+  margin: 0;
+  color: #667085;
+  font-size: 0.82rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .puzzle-viewport__zoom-label,
+  .puzzle-viewport__hint {
+    color: #b8c0d4;
+  }
+
+  .puzzle-viewport__button {
+    color: #aeb2ff;
+    border-color: rgba(174, 178, 255, 0.35);
+  }
+}

@@ -1,0 +1,56 @@
+.puzzle-minimap {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(127, 127, 127, 0.35);
+  border-radius: 8px;
+  background: rgba(127, 127, 127, 0.08);
+}
+
+.puzzle-minimap__label {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.35rem;
+  z-index: 2;
+  color: #667085;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.puzzle-minimap__grid {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid rgba(80, 88, 229, 0.55);
+  background: rgba(80, 88, 229, 0.18);
+  border-radius: 2px;
+}
+
+.puzzle-minimap__viewport {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #5058e5;
+  background: rgba(80, 88, 229, 0.12);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .puzzle-minimap__label {
+    color: #b8c0d4;
+  }
+
+  .puzzle-minimap__grid {
+    border-color: rgba(174, 178, 255, 0.5);
+    background: rgba(174, 178, 255, 0.16);
+  }
+
+  .puzzle-minimap__viewport {
+    border-color: #aeb2ff;
+    background: rgba(174, 178, 255, 0.12);
+  }
+}
