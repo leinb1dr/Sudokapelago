@@ -28,12 +28,11 @@ describe('useEntryModeHotkeys', () => {
           entryMode: 'digit' as const,
           onCornerCenterModeChange,
           onEntryModeChange,
-          pencilStyle: 'standard' as const,
         },
       },
     )
 
-    expect(result.current).toBe('standard')
+    expect(result.current).toBe('corner')
 
     act(() => {
       dispatchKey('keydown', 'Tab')
@@ -45,7 +44,6 @@ describe('useEntryModeHotkeys', () => {
       entryMode: 'pencil',
       onCornerCenterModeChange,
       onEntryModeChange,
-      pencilStyle: 'standard',
     })
 
     act(() => {
@@ -54,7 +52,7 @@ describe('useEntryModeHotkeys', () => {
     expect(onCornerCenterModeChange).toHaveBeenCalledWith('center')
   })
 
-  it('temporarily flips pencil style while Shift is held', () => {
+  it('temporarily flips corner/center mode while Shift is held', () => {
     const onEntryModeChange = vi.fn()
     const onCornerCenterModeChange = vi.fn()
 
@@ -64,43 +62,42 @@ describe('useEntryModeHotkeys', () => {
         entryMode: 'pencil',
         onCornerCenterModeChange,
         onEntryModeChange,
-        pencilStyle: 'standard',
       }),
     )
 
-    expect(result.current).toBe('standard')
+    expect(result.current).toBe('corner')
 
     act(() => {
       dispatchKey('keydown', 'Shift')
     })
-    expect(result.current).toBe('corner-center')
+    expect(result.current).toBe('center')
+    expect(onCornerCenterModeChange).not.toHaveBeenCalled()
 
     act(() => {
       dispatchKey('keyup', 'Shift')
     })
-    expect(result.current).toBe('standard')
+    expect(result.current).toBe('corner')
   })
 
-  it('clears the temporary Shift style when the window blurs', () => {
+  it('clears the temporary Shift mode when the window blurs', () => {
     const { result } = renderHook(() =>
       useEntryModeHotkeys({
-        cornerCenterMode: 'corner',
+        cornerCenterMode: 'center',
         entryMode: 'pencil',
         onCornerCenterModeChange: vi.fn(),
         onEntryModeChange: vi.fn(),
-        pencilStyle: 'corner-center',
       }),
     )
 
     act(() => {
       dispatchKey('keydown', 'Shift')
     })
-    expect(result.current).toBe('standard')
+    expect(result.current).toBe('corner')
 
     act(() => {
       window.dispatchEvent(new Event('blur'))
     })
-    expect(result.current).toBe('corner-center')
+    expect(result.current).toBe('center')
   })
 
   it('ignores repeated Tab and Control keydown events', () => {
@@ -113,7 +110,6 @@ describe('useEntryModeHotkeys', () => {
         entryMode: 'digit',
         onCornerCenterModeChange,
         onEntryModeChange,
-        pencilStyle: 'standard',
       }),
     )
 
@@ -133,7 +129,6 @@ describe('useEntryModeHotkeys', () => {
         entryMode: 'digit',
         onCornerCenterModeChange: vi.fn(),
         onEntryModeChange: vi.fn(),
-        pencilStyle: 'standard',
       }),
     )
 

@@ -2,15 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import {
   toggleCornerCenterMode,
   toggleEntryMode,
-  togglePencilStyle,
   type CornerCenterMode,
   type EntryMode,
-  type PencilStyle,
 } from './sudoku/pencilMarks'
 
 interface UseEntryModeHotkeysOptions {
   entryMode: EntryMode
-  pencilStyle: PencilStyle
   cornerCenterMode: CornerCenterMode
   onEntryModeChange: (mode: EntryMode) => void
   onCornerCenterModeChange: (mode: CornerCenterMode) => void
@@ -20,15 +17,14 @@ interface UseEntryModeHotkeysOptions {
  * Keyboard shortcuts for entry modes:
  * - Tab: toggle Number ↔ Pencil
  * - Control: toggle Corner ↔ Center
- * - Hold Shift: temporarily flip Standard ↔ Corner/Center
+ * - Hold Shift: temporarily flip Corner ↔ Center
  */
 function useEntryModeHotkeys({
   entryMode,
-  pencilStyle,
   cornerCenterMode,
   onEntryModeChange,
   onCornerCenterModeChange,
-}: UseEntryModeHotkeysOptions): PencilStyle {
+}: UseEntryModeHotkeysOptions): CornerCenterMode {
   const [shiftHeld, setShiftHeld] = useState(false)
   const entryModeRef = useRef(entryMode)
   const cornerCenterModeRef = useRef(cornerCenterMode)
@@ -84,7 +80,7 @@ function useEntryModeHotkeys({
     }
   }, [])
 
-  return shiftHeld ? togglePencilStyle(pencilStyle) : pencilStyle
+  return shiftHeld ? toggleCornerCenterMode(cornerCenterMode) : cornerCenterMode
 }
 
 export default useEntryModeHotkeys
