@@ -1,0 +1,132 @@
+.unified-grid-root {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.unified-grid {
+  display: grid;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.unified-grid__row {
+  display: contents;
+}
+
+.unified-grid__cell {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+}
+
+.unified-grid__cell--empty {
+  pointer-events: none;
+  background: transparent;
+  border: 0;
+}
+
+.unified-grid__cell--occupied {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #213547;
+  font-size: clamp(1.1rem, 4.5vw, 2rem);
+  font-weight: 600;
+  line-height: 1;
+  outline: 0;
+  user-select: none;
+}
+
+.unified-grid__cell--right-thin {
+  border-right: 1px solid rgba(33, 53, 71, 0.45);
+}
+
+.unified-grid__cell--bottom-thin {
+  border-bottom: 1px solid rgba(33, 53, 71, 0.45);
+}
+
+.unified-grid__cell--right-box {
+  border-right: 3px solid #213547;
+}
+
+.unified-grid__cell--bottom-box {
+  border-bottom: 3px solid #213547;
+}
+
+.unified-grid__cell--right-none {
+  border-right: 0;
+}
+
+.unified-grid__cell--bottom-none {
+  border-bottom: 0;
+}
+
+.unified-grid__cell--selected,
+.unified-grid__cell--occupied:focus-visible {
+  background: #dbeafe;
+}
+
+.unified-grid__cell--given {
+  background: #eef0ff;
+  color: #3038a8;
+  font-weight: 800;
+}
+
+.unified-grid__cell--given.unified-grid__cell--selected,
+.unified-grid__cell--given:focus-visible {
+  background: #d9ddff;
+}
+
+.unified-grid__outlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.unified-grid__board-outline {
+  position: absolute;
+  box-sizing: border-box;
+  border: 4px solid #213547;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .unified-grid__cell--occupied {
+    background: #242424;
+    color: #f7f7f7;
+  }
+
+  .unified-grid__cell--right-thin,
+  .unified-grid__cell--bottom-thin {
+    border-color: rgba(247, 247, 247, 0.45);
+  }
+
+  .unified-grid__cell--right-box,
+  .unified-grid__cell--bottom-box {
+    border-color: #f7f7f7;
+  }
+
+  .unified-grid__cell--selected,
+  .unified-grid__cell--occupied:focus-visible {
+    background: #334155;
+  }
+
+  .unified-grid__cell--given {
+    background: #2c315a;
+    color: #c9cdff;
+  }
+
+  .unified-grid__cell--given.unified-grid__cell--selected,
+  .unified-grid__cell--given:focus-visible {
+    background: #3c447c;
+  }
+
+  .unified-grid__board-outline {
+    border-color: #f7f7f7;
+  }
+}
