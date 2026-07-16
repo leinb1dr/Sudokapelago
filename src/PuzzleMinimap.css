@@ -1,0 +1,37 @@
+.puzzle-minimap {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 auto;
+  border: 1px solid rgba(127, 127, 127, 0.3);
+  border-radius: 8px;
+  background: rgba(127, 127, 127, 0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.puzzle-minimap__grid {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid rgba(80, 88, 229, 0.55);
+  background: rgba(80, 88, 229, 0.18);
+}
+
+.puzzle-minimap__viewport {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #5058e5;
+  background: rgba(80, 88, 229, 0.12);
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .puzzle-minimap__grid {
+    border-color: rgba(174, 178, 255, 0.55);
+    background: rgba(174, 178, 255, 0.16);
+  }
+
+  .puzzle-minimap__viewport {
+    border-color: #aeb2ff;
+    background: rgba(174, 178, 255, 0.12);
+  }
+}

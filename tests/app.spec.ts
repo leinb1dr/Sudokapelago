@@ -8,7 +8,7 @@ test('landing page introduces the human-solvable setter with an empty grid', asy
     page.getByRole('heading', { name: 'Human-solvable Sudoku setter' }),
   ).toBeVisible()
   await expect(
-    page.getByText('Choose a difficulty, then generate a puzzle.'),
+    page.getByText('Choose a difficulty and layout, then generate a puzzle.'),
   ).toBeVisible()
   await expect(page.getByText('archipelago.js client initialized')).toBeVisible()
 
@@ -352,4 +352,35 @@ test('places entry controls beside the board on wide screens and below on narrow
   expect(layout?.below).toBe(true)
   await expect(controls).toBeVisible()
   await expect(grid).toBeVisible()
+})
+
+test('overlapping layout generates a pannable multi-grid puzzle with a minimap', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  await page.getByRole('radio', { name: /2 grids · 1-box overlap/i }).check()
+  await page.getByRole('radio', { name: /^Easy$/i }).check()
+
+  const generateButton = page.getByRole('button', {
+    name: 'Generate easy puzzle',
+  })
+  await generateButton.click()
+
+  await expect(page.getByText(/2 grids ·/)).toBeVisible({ timeout: 60_000 })
+  await expect(
+    page.getByRole('grid', { name: 'Overlapping Sudoku board' }),
+  ).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Puzzle minimap' })).toBeVisible()
+  await expect(
+    page.getByRole('region', { name: 'Overlapping puzzle viewport' }),
+  ).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Zoom in' })).toBeVisible()
+
+  const cells = page
+    .getByRole('grid', { name: 'Overlapping Sudoku board' })
+    .getByRole('gridcell')
+  await expect(cells.first()).toBeVisible()
+  const count = await cells.count()
+  expect(count).toBeGreaterThan(81)
 })

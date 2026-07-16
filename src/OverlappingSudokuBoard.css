@@ -1,0 +1,61 @@
+.overlap-board {
+  display: grid;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.overlap-board__hole {
+  pointer-events: none;
+}
+
+.overlap-board__cell {
+  width: 100%;
+  height: 100%;
+  font-size: clamp(0.85rem, 2.2vw, 1.35rem);
+}
+
+.overlap-board__cell--overlap {
+  background: #f5f7ff;
+}
+
+.overlap-board__cell--overlap.sudoku-grid__cell--given {
+  background: #e8ebff;
+}
+
+.overlap-board__cell--overlap.sudoku-grid__cell--selected,
+.overlap-board__cell--overlap.sudoku-grid__cell--given.sudoku-grid__cell--selected {
+  background: #dbeafe;
+}
+
+.overlap-board__cell--grid-right {
+  border-right: 3px solid #213547;
+}
+
+.overlap-board__cell--grid-bottom {
+  border-bottom: 3px solid #213547;
+}
+
+.overlap-board__cell--grid-left {
+  border-left: 3px solid #213547;
+}
+
+.overlap-board__cell--grid-top {
+  border-top: 3px solid #213547;
+}
+
+@media (prefers-color-scheme: dark) {
+  .overlap-board__cell--overlap {
+    background: #2a2f45;
+  }
+
+  .overlap-board__cell--overlap.sudoku-grid__cell--given {
+    background: #32385f;
+  }
+
+  .overlap-board__cell--grid-right,
+  .overlap-board__cell--grid-bottom,
+  .overlap-board__cell--grid-left,
+  .overlap-board__cell--grid-top {
+    border-color: #f7f7f7;
+  }
+}

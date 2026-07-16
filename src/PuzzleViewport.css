@@ -1,0 +1,77 @@
+.puzzle-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.puzzle-viewport__toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.puzzle-viewport__toolbar button {
+  min-width: 2.25rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(80, 88, 229, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #5058e5;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.puzzle-viewport__toolbar button:hover {
+  background: rgba(80, 88, 229, 0.08);
+}
+
+.puzzle-viewport__toolbar button:focus-visible {
+  outline: 3px solid rgba(100, 108, 255, 0.35);
+  outline-offset: 2px;
+}
+
+.puzzle-viewport__frame {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: min(70vh, 36rem);
+  overflow: hidden;
+  border: 1px solid rgba(127, 127, 127, 0.25);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(80, 88, 229, 0.08), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(33, 53, 71, 0.06), transparent 40%),
+    rgba(127, 127, 127, 0.06);
+  cursor: grab;
+  touch-action: none;
+}
+
+.puzzle-viewport__frame:active {
+  cursor: grabbing;
+}
+
+.puzzle-viewport__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+@media (prefers-color-scheme: dark) {
+  .puzzle-viewport__toolbar button {
+    color: #aeb2ff;
+    border-color: rgba(174, 178, 255, 0.35);
+  }
+
+  .puzzle-viewport__frame {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(100, 108, 255, 0.12), transparent 45%),
+      radial-gradient(circle at 80% 80%, rgba(247, 247, 247, 0.04), transparent 40%),
+      rgba(0, 0, 0, 0.25);
+  }
+}

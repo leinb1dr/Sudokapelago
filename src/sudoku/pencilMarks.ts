@@ -52,8 +52,8 @@ export function createEmptyCellMarks(): CellMarks {
   }
 }
 
-export function createEmptyPencilBoard(): PencilBoard {
-  return Array.from({ length: CELL_COUNT }, () => createEmptyCellMarks())
+export function createEmptyPencilBoard(cellCount = CELL_COUNT): PencilBoard {
+  return Array.from({ length: cellCount }, () => createEmptyCellMarks())
 }
 
 function insertSorted(digits: readonly Digit[], digit: Digit): readonly Digit[] {
