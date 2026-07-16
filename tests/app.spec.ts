@@ -389,6 +389,63 @@ test('generates an overlapping puzzle with pan/zoom viewport and minimap', async
   await expect(editable).toHaveText('5')
 })
 
+test('long-press on a cell pans the overlapping viewport', async ({ page }) => {
+  test.setTimeout(120_000)
+  await page.goto('/')
+
+  await page.getByRole('radio', { name: 'Overlapping' }).click()
+  await page.getByLabel('Box overlap').selectOption('3')
+  await page.getByLabel('Grid count').fill('2')
+  await page
+    .getByRole('button', { name: /Generate 3-box × 2-grid easy puzzle/ })
+    .click()
+
+  await expect(page.getByRole('status')).toContainText(
+    /easy puzzle · \d+ clues · \d+ cells tested · 2 grids · 3-box overlap/,
+    { timeout: 90_000 },
+  )
+
+  const viewport = page.getByRole('region', { name: 'Puzzle viewport' })
+  const world = page.locator('.puzzle-viewport__world')
+  await expect(viewport).toBeVisible()
+  await expect(page.getByText(/Long-press or Shift-drag to pan/i)).toBeVisible()
+
+  const transformBefore = await world.evaluate((element) => {
+    return getComputedStyle(element).transform
+  })
+
+  const cell = page
+    .getByRole('grid', { name: 'Sudoku grid 1' })
+    .locator('[role="gridcell"]')
+    .first()
+  await cell.scrollIntoViewIfNeeded()
+  const box = await cell.boundingBox()
+  expect(box).not.toBeNull()
+
+  const startX = box!.x + box!.width / 2
+  const startY = box!.y + box!.height / 2
+
+  await page.mouse.move(startX, startY)
+  await page.mouse.down()
+  await page.waitForTimeout(400)
+  await expect(viewport).toHaveClass(/puzzle-viewport--panning/)
+  await page.mouse.move(startX + 60, startY + 40)
+  await page.mouse.up()
+
+  const transformAfter = await world.evaluate((element) => {
+    return getComputedStyle(element).transform
+  })
+  expect(transformAfter).not.toBe(transformBefore)
+
+  // Short click still selects after a pan gesture.
+  const editable = page
+    .getByRole('grid', { name: 'Sudoku grid 1' })
+    .locator('[role="gridcell"][aria-readonly="false"]')
+    .first()
+  await editable.click()
+  await expect(editable).toHaveAttribute('aria-selected', 'true')
+})
+
 test('places entry controls beside the overlapping board on wide screens and below on narrow', async ({
   page,
 }) => {

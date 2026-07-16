@@ -1,5 +1,10 @@
 import './PuzzleViewport.css'
 import { useEffect, useRef, useState } from 'react'
+import {
+  exceedsMoveTolerance,
+  LONG_PRESS_MS,
+  shouldStartImmediatePan,
+} from './longPressPan'
 
 const MIN_ZOOM = 0.35
 const MAX_ZOOM = 2.5
@@ -21,6 +26,18 @@ interface PuzzleViewportProps {
   className?: string
 }
 
+interface PanDragState {
+  pointerId: number
+  startX: number
+  startY: number
+  originX: number
+  originY: number
+}
+
+interface PendingLongPressState extends PanDragState {
+  timerId: number
+}
+
 function clampZoom(scale: number): number {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, scale))
 }
@@ -34,13 +51,9 @@ function PuzzleViewport({
   className,
 }: PuzzleViewportProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
-  const dragRef = useRef<{
-    pointerId: number
-    startX: number
-    startY: number
-    originX: number
-    originY: number
-  } | null>(null)
+  const dragRef = useRef<PanDragState | null>(null)
+  const pendingLongPressRef = useRef<PendingLongPressState | null>(null)
+  const suppressClickRef = useRef(false)
   const [isPanning, setIsPanning] = useState(false)
 
   useEffect(() => {
@@ -64,34 +77,100 @@ function PuzzleViewport({
     }
   }, [onTransformChange, transform])
 
+  useEffect(() => {
+    return () => {
+      const pending = pendingLongPressRef.current
+      if (pending) {
+        window.clearTimeout(pending.timerId)
+        pendingLongPressRef.current = null
+      }
+    }
+  }, [])
+
+  function clearPendingLongPress() {
+    const pending = pendingLongPressRef.current
+    if (!pending) {
+      return
+    }
+    window.clearTimeout(pending.timerId)
+    pendingLongPressRef.current = null
+  }
+
+  function beginPan(drag: PanDragState, element: HTMLElement) {
+    dragRef.current = drag
+    setIsPanning(true)
+    if (typeof element.setPointerCapture === 'function') {
+      element.setPointerCapture(drag.pointerId)
+    }
+  }
+
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.button !== 0) {
       return
     }
-    // Allow cell interaction; pan when holding Space or middle button, or
-    // when clicking the viewport chrome (not a grid cell).
-    const target = event.target as HTMLElement
-    const onCell = Boolean(target.closest('[role="gridcell"]'))
-    if (onCell && !event.shiftKey) {
+    if (dragRef.current || pendingLongPressRef.current) {
       return
     }
 
-    dragRef.current = {
+    const target = event.target as HTMLElement
+    const onCell = Boolean(target.closest('[role="gridcell"]'))
+    const drag: PanDragState = {
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
       originX: transform.translateX,
       originY: transform.translateY,
     }
-    setIsPanning(true)
-    event.currentTarget.setPointerCapture(event.pointerId)
+
+    if (shouldStartImmediatePan(onCell, event.shiftKey)) {
+      beginPan(drag, event.currentTarget)
+      return
+    }
+
+    // On a cell without Shift: wait for a long-press before panning so a
+    // short tap can still select. Works even when boards fill the viewport
+    // (e.g. 3-box overlap with no empty chrome to grab).
+    const viewport = event.currentTarget
+    const timerId = window.setTimeout(() => {
+      const pending = pendingLongPressRef.current
+      if (!pending || pending.pointerId !== drag.pointerId) {
+        return
+      }
+      pendingLongPressRef.current = null
+      suppressClickRef.current = true
+      beginPan(pending, viewport)
+    }, LONG_PRESS_MS)
+
+    pendingLongPressRef.current = { ...drag, timerId }
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const pending = pendingLongPressRef.current
+    if (pending && pending.pointerId === event.pointerId) {
+      if (
+        exceedsMoveTolerance(
+          pending.startX,
+          pending.startY,
+          event.clientX,
+          event.clientY,
+        )
+      ) {
+        clearPendingLongPress()
+      }
+      return
+    }
+
     const drag = dragRef.current
     if (!drag || drag.pointerId !== event.pointerId) {
       return
     }
+
+    if (
+      exceedsMoveTolerance(drag.startX, drag.startY, event.clientX, event.clientY)
+    ) {
+      suppressClickRef.current = true
+    }
+
     onTransformChange({
       ...transform,
       translateX: drag.originX + (event.clientX - drag.startX),
@@ -100,14 +179,39 @@ function PuzzleViewport({
   }
 
   function endPan(event: React.PointerEvent<HTMLDivElement>) {
+    if (pendingLongPressRef.current?.pointerId === event.pointerId) {
+      clearPendingLongPress()
+    }
+
     if (dragRef.current?.pointerId !== event.pointerId) {
       return
     }
+
     dragRef.current = null
     setIsPanning(false)
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+    if (
+      typeof event.currentTarget.hasPointerCapture === 'function' &&
+      event.currentTarget.hasPointerCapture(event.pointerId)
+    ) {
       event.currentTarget.releasePointerCapture(event.pointerId)
     }
+
+    // Clicks usually follow pointerup in the same turn; clear the suppress
+    // flag shortly after in case no click event is synthesized (e.g. touch).
+    if (suppressClickRef.current) {
+      window.setTimeout(() => {
+        suppressClickRef.current = false
+      }, 350)
+    }
+  }
+
+  function handleClickCapture(event: React.MouseEvent<HTMLDivElement>) {
+    if (!suppressClickRef.current) {
+      return
+    }
+    event.preventDefault()
+    event.stopPropagation()
+    suppressClickRef.current = false
   }
 
   function zoomBy(delta: number) {
@@ -131,6 +235,7 @@ function PuzzleViewport({
             ? 'puzzle-viewport puzzle-viewport--panning'
             : 'puzzle-viewport'
         }
+        onClickCapture={handleClickCapture}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={endPan}
@@ -182,7 +287,7 @@ function PuzzleViewport({
         </span>
       </div>
       <p className="puzzle-viewport__hint">
-        Scroll to zoom. Shift-drag (or drag empty space) to pan.
+        Scroll to zoom. Long-press or Shift-drag to pan.
       </p>
     </div>
   )
