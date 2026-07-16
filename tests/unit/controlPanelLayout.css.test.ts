@@ -25,6 +25,12 @@ describe('control panel layout CSS', () => {
     expect(appCss).toMatch(
       /@media \(min-width:\s*52rem\)[\s\S]*\.board-stage \.entry-mode-controls\s*\{[^}]*flex-direction:\s*column/,
     )
+    expect(appCss).not.toMatch(
+      /\.board-stage--overlapping\s*\{[^}]*flex-direction:\s*column/,
+    )
+    expect(appCss).not.toMatch(
+      /\.board-stage--overlapping \.entry-mode-controls\s*\{[^}]*flex-direction:\s*row/,
+    )
   })
 
   it('stacks condensed entry controls on narrow screens', () => {

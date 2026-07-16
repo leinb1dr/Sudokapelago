@@ -199,17 +199,15 @@
     gap: 1rem;
   }
 
-  .board-stage--overlapping {
-    flex-direction: column;
-  }
-
   .board-stage .sudoku-grid {
     flex: 0 1 32rem;
     width: min(100%, 32rem);
   }
 
   .board-stage--overlapping .overlapping-board {
-    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
   }
 
   .board-stage .entry-mode-controls {
@@ -220,13 +218,6 @@
     gap: 0.65rem;
     position: sticky;
     top: 1rem;
-  }
-
-  .board-stage--overlapping .entry-mode-controls {
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    position: static;
   }
 
   .board-stage .entry-mode-controls__group {
