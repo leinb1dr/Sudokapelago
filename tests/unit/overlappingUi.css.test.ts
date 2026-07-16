@@ -21,4 +21,15 @@ describe('overlapping UI styles', () => {
     expect(css).toContain('puzzle-minimap__viewport')
     expect(css).toContain('puzzle-minimap__grid')
   })
+
+  it('draws logical board outlines on a unified cell field', () => {
+    const css = readFileSync(
+      resolve(process.cwd(), 'src/OverlappingSudokuBoard.css'),
+      'utf8',
+    )
+    expect(css).toContain('overlapping-board__unified')
+    expect(css).toContain('overlapping-board__outline')
+    expect(css).toContain('overlapping-board__cell--inactive')
+    expect(css).not.toContain('overlapping-board__grid--linked')
+  })
 })

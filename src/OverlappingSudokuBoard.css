@@ -17,20 +17,115 @@
   position: relative;
 }
 
-.overlapping-board__grid {
-  position: absolute;
+.overlapping-board__unified-wrap {
+  position: relative;
+}
+
+.overlapping-board__unified {
+  display: grid;
   box-sizing: border-box;
 }
 
-.overlapping-board__grid .sudoku-grid {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  box-shadow: 0 0.65rem 1.5rem rgba(0, 0, 0, 0.14);
+.overlapping-board__cell {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #213547;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+  outline: 0;
+  user-select: none;
 }
 
-.overlapping-board__grid--linked .sudoku-grid {
-  box-shadow: 0 0.45rem 1.1rem rgba(80, 88, 229, 0.18);
+.overlapping-board__cell--inactive {
+  background: transparent;
+  pointer-events: none;
+}
+
+.overlapping-board__cell--right-thin {
+  border-right: 1px solid rgba(33, 53, 71, 0.45);
+}
+
+.overlapping-board__cell--bottom-thin {
+  border-bottom: 1px solid rgba(33, 53, 71, 0.45);
+}
+
+.overlapping-board__cell--right-block {
+  border-right: 3px solid #213547;
+}
+
+.overlapping-board__cell--bottom-block {
+  border-bottom: 3px solid #213547;
+}
+
+.overlapping-board__cell--selected,
+.overlapping-board__cell:focus-visible {
+  background: #dbeafe;
+}
+
+.overlapping-board__cell--given {
+  background: #eef0ff;
+  color: #3038a8;
+  font-weight: 800;
+}
+
+.overlapping-board__cell--given.overlapping-board__cell--selected,
+.overlapping-board__cell--given:focus-visible {
+  background: #d9ddff;
+}
+
+.overlapping-board__outline {
+  position: absolute;
+  box-sizing: border-box;
+  border: 4px solid #213547;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .overlapping-board__cell {
+    background: #242424;
+    color: #f7f7f7;
+  }
+
+  .overlapping-board__cell--inactive {
+    background: transparent;
+  }
+
+  .overlapping-board__cell--right-thin,
+  .overlapping-board__cell--bottom-thin {
+    border-color: rgba(247, 247, 247, 0.45);
+  }
+
+  .overlapping-board__cell--right-block,
+  .overlapping-board__cell--bottom-block {
+    border-color: #f7f7f7;
+  }
+
+  .overlapping-board__cell--selected,
+  .overlapping-board__cell:focus-visible {
+    background: #334155;
+  }
+
+  .overlapping-board__cell--given {
+    background: #2c315a;
+    color: #c9cdff;
+  }
+
+  .overlapping-board__cell--given.overlapping-board__cell--selected,
+  .overlapping-board__cell--given:focus-visible {
+    background: #3c447c;
+  }
+
+  .overlapping-board__outline {
+    border-color: #f7f7f7;
+  }
 }
 
 @media (min-width: 52rem) {

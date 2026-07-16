@@ -70,3 +70,12 @@ export {
 } from './generator'
 
 export { createWorkerFillGrid } from './workerClient'
+
+export {
+  buildActiveCellKeySet,
+  findNextActiveCell,
+  getBoardOutlineRect,
+  getUnifiedCellBorders,
+  gridsContainingPoint,
+  isActiveGlobalCell,
+} from './unifiedGrid'
