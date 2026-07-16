@@ -54,7 +54,9 @@ export function writeLocalBoard(
   graph: OverlapGraph,
   gridId: GridId,
   localBoard: Board,
+  options: { clearEmpty?: boolean } = {},
 ): void {
+  const clearEmpty = options.clearEmpty ?? false
   const node = getNode(graph, gridId)
 
   for (let cell = 0; cell < CELL_COUNT; cell += 1) {
@@ -69,7 +71,14 @@ export function writeLocalBoard(
       )
     }
 
-    if (next !== 0 || existing === null || existing === 0) {
+    if (next !== 0) {
+      globalBoard[index] = next
+      continue
+    }
+
+    // Keep a neighbor's placement when merging solver results, but allow the
+    // setter to clear clues with `clearEmpty: true`.
+    if (clearEmpty || existing === null || existing === 0) {
       globalBoard[index] = next
     }
   }

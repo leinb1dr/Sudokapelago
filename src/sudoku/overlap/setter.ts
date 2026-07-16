@@ -173,7 +173,9 @@ function finishPuzzleFromSolution(
     attempts.push(overlapAttempt)
 
     if (attempt.accepted) {
-      writeLocalBoard(puzzle, graph, candidate.gridId, localPuzzle)
+      writeLocalBoard(puzzle, graph, candidate.gridId, localPuzzle, {
+        clearEmpty: true,
+      })
     }
 
     options.onAttempt?.(overlapAttempt, [...puzzle])

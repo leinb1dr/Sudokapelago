@@ -150,7 +150,9 @@ describe('overlapping generation and setter', () => {
     expect(puzzle.graph.nodes).toHaveLength(2)
     expect(puzzle.overlapCellCount).toBe(9)
     expect(puzzle.attempts.every((attempt) => !attempt.isOverlap)).toBe(true)
+    expect(puzzle.attempts.some((attempt) => attempt.accepted)).toBe(true)
     expect(puzzle.clues).toBeGreaterThan(puzzle.overlapCellCount)
+    expect(puzzle.clues).toBeLessThan(153)
 
     const solved = solveOverlappingWithHumanTechniques(
       puzzle.puzzle,
