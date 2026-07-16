@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import DifficultyPicker from './DifficultyPicker'
 import EntryModeControls from './EntryModeControls'
+import OverlapControls, { type PuzzleMode } from './OverlapControls'
+import OverlappingSudokuBoard from './OverlappingSudokuBoard'
 import SudokuGrid from './SudokuGrid'
 import { solveWithHumanTechniques } from './sudoku/humanSolver'
 import { logHumanSolveResult } from './sudoku/solveStepLog'
@@ -15,6 +17,15 @@ import {
 } from './sudoku/pencilMarks'
 import { createSudokuPuzzle } from './sudoku/setter'
 import { CELL_COUNT } from './sudoku/grid'
+import {
+  createOverlappingSudokuPuzzle,
+  createWorkerFillGrid,
+  extractLocalBoard,
+  solveOverlappingPuzzle,
+  type GlobalBoard,
+  type OverlapBoxes,
+  type OverlappingSudokuPuzzle,
+} from './sudoku/overlapping'
 import type { Board, Difficulty, SudokuPuzzle } from './sudoku/types'
 import useEntryModeHotkeys from './useEntryModeHotkeys'
 
@@ -29,8 +40,14 @@ function createEmptyBoard(): Board {
 function App() {
   const archipelagoReady = archipelagoClient instanceof Client
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
+  const [mode, setMode] = useState<PuzzleMode>('standard')
+  const [overlapBoxes, setOverlapBoxes] = useState<OverlapBoxes>(1)
+  const [gridCount, setGridCount] = useState(6)
   const [puzzle, setPuzzle] = useState<SudokuPuzzle | null>(null)
+  const [overlappingPuzzle, setOverlappingPuzzle] =
+    useState<OverlappingSudokuPuzzle | null>(null)
   const [board, setBoard] = useState<Board>(() => createEmptyBoard())
+  const [globalBoard, setGlobalBoard] = useState<GlobalBoard>(() => new Map())
   const [pencilBoard, setPencilBoard] = useState<PencilBoard>(() =>
     createEmptyPencilBoard(),
   )
@@ -39,6 +56,7 @@ function App() {
   const [cornerCenterMode, setCornerCenterMode] =
     useState<CornerCenterMode>('corner')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
   const effectiveCornerCenterMode = useEntryModeHotkeys({
     cornerCenterMode,
     entryMode,
@@ -53,18 +71,63 @@ function App() {
     }
   }, [puzzle])
 
+  useEffect(() => {
+    if (overlappingPuzzle) {
+      setGlobalBoard(new Map(overlappingPuzzle.puzzle))
+    }
+  }, [overlappingPuzzle])
+
   async function generatePuzzle() {
     setIsGenerating(true)
+    setGenerateError(null)
     await new Promise<void>((resolve) => {
       requestAnimationFrame(() => {
         resolve()
       })
     })
-    setPuzzle(createSudokuPuzzle({ difficulty }))
-    setIsGenerating(false)
+
+    try {
+      if (mode === 'standard') {
+        setOverlappingPuzzle(null)
+        setPuzzle(createSudokuPuzzle({ difficulty }))
+      } else {
+        setPuzzle(null)
+        const fillGrid = createWorkerFillGrid() ?? undefined
+        const generated = await createOverlappingSudokuPuzzle({
+          difficulty,
+          overlapBoxes,
+          gridCount,
+          fillGrid,
+        })
+        setOverlappingPuzzle(generated)
+      }
+    } catch (error) {
+      setGenerateError(
+        error instanceof Error ? error.message : 'Puzzle generation failed.',
+      )
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   function debugSolve() {
+    if (mode === 'overlapping' && overlappingPuzzle) {
+      const result = solveOverlappingPuzzle(
+        overlappingPuzzle.topology,
+        globalBoard,
+        difficulty,
+      )
+      if (result.solved) {
+        setGlobalBoard(result.board)
+      }
+      // Also log the first grid's human solve for debugging parity.
+      const firstGrid = overlappingPuzzle.topology.grids[0]!
+      const local = extractLocalBoard(globalBoard, firstGrid)
+      const localResult = solveWithHumanTechniques([...local], { difficulty })
+      logHumanSolveResult(localResult, difficulty)
+      return
+    }
+
     const result = solveWithHumanTechniques([...board], { difficulty })
     logHumanSolveResult(result, difficulty)
 
@@ -72,6 +135,17 @@ function App() {
       setBoard([...result.board])
     }
   }
+
+  const activeClues =
+    mode === 'overlapping'
+      ? overlappingPuzzle?.clues
+      : puzzle?.clues
+  const activeAttempts =
+    mode === 'overlapping'
+      ? overlappingPuzzle?.attempts.length
+      : puzzle?.attempts.length
+  const hasActivePuzzle =
+    mode === 'overlapping' ? overlappingPuzzle !== null : puzzle !== null
 
   return (
     <main className="app">
@@ -90,9 +164,19 @@ function App() {
           <h2 id="sudoku-board-title">Human-solvable Sudoku setter</h2>
           <p>
             Every clue is tested once. A removal stays only when the selected
-            techniques can solve the board from start to finish.
+            techniques can solve the board from start to finish. Overlapping
+            layouts keep shared boxes denser so uniqueness stays tractable.
           </p>
         </div>
+
+        <OverlapControls
+          gridCount={gridCount}
+          mode={mode}
+          onGridCountChange={setGridCount}
+          onModeChange={setMode}
+          onOverlapBoxesChange={setOverlapBoxes}
+          overlapBoxes={overlapBoxes}
+        />
 
         <div className="setter-controls">
           <DifficultyPicker value={difficulty} onChange={setDifficulty} />
@@ -105,7 +189,9 @@ function App() {
             >
               {isGenerating
                 ? 'Testing clue removals…'
-                : `Generate ${difficulty} puzzle`}
+                : mode === 'overlapping'
+                  ? `Generate ${overlapBoxes}-box × ${gridCount}-grid ${difficulty} puzzle`
+                  : `Generate ${difficulty} puzzle`}
             </button>
             <button
               className="debug-solve-button"
@@ -117,10 +203,19 @@ function App() {
           </div>
         </div>
 
-        {puzzle ? (
+        {generateError ? (
+          <p className="puzzle-summary puzzle-summary--error" role="alert">
+            {generateError}
+          </p>
+        ) : null}
+
+        {hasActivePuzzle ? (
           <p className="puzzle-summary" role="status">
-            <strong>{puzzle.difficulty}</strong> puzzle · {puzzle.clues} clues ·{' '}
-            {puzzle.attempts.length} cells tested
+            <strong>{difficulty}</strong> puzzle · {activeClues} clues ·{' '}
+            {activeAttempts} cells tested
+            {mode === 'overlapping'
+              ? ` · ${gridCount} grids · ${overlapBoxes}-box overlap`
+              : null}
           </p>
         ) : (
           <p className="puzzle-summary" role="status">
@@ -128,17 +223,39 @@ function App() {
           </p>
         )}
 
-        <div className="board-stage">
-          <SudokuGrid
-            board={board}
-            cornerCenterMode={effectiveCornerCenterMode}
-            entryMode={entryMode}
-            givenCells={puzzle?.puzzle.map((value) => value !== 0)}
-            onBoardChange={setBoard}
-            onPencilBoardChange={setPencilBoard}
-            pencilBoard={pencilBoard}
-            pencilStyle={pencilStyle}
-          />
+        <div
+          className={
+            mode === 'overlapping'
+              ? 'board-stage board-stage--overlapping'
+              : 'board-stage'
+          }
+        >
+          {mode === 'overlapping' && overlappingPuzzle ? (
+            <OverlappingSudokuBoard
+              board={globalBoard}
+              cornerCenterMode={effectiveCornerCenterMode}
+              entryMode={entryMode}
+              givenBoard={overlappingPuzzle.puzzle}
+              onBoardChange={setGlobalBoard}
+              topology={overlappingPuzzle.topology}
+              pencilStyle={pencilStyle}
+            />
+          ) : mode === 'overlapping' ? (
+            <p className="overlap-placeholder">
+              Generate an overlapping puzzle to open the pan-and-zoom board.
+            </p>
+          ) : (
+            <SudokuGrid
+              board={board}
+              cornerCenterMode={effectiveCornerCenterMode}
+              entryMode={entryMode}
+              givenCells={puzzle?.puzzle.map((value) => value !== 0)}
+              onBoardChange={setBoard}
+              onPencilBoardChange={setPencilBoard}
+              pencilBoard={pencilBoard}
+              pencilStyle={pencilStyle}
+            />
+          )}
 
           <EntryModeControls
             cornerCenterMode={effectiveCornerCenterMode}

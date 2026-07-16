@@ -146,6 +146,22 @@
   text-transform: capitalize;
 }
 
+.puzzle-summary--error {
+  color: #842029;
+}
+
+.overlap-placeholder {
+  margin: 0;
+  padding: 2rem 1rem;
+  color: #667085;
+  border: 1px dashed rgba(127, 127, 127, 0.35);
+  border-radius: 12px;
+}
+
+.board-stage--overlapping {
+  align-items: stretch;
+}
+
 .status {
   display: flex;
   flex-direction: column;
@@ -183,9 +199,17 @@
     gap: 1rem;
   }
 
+  .board-stage--overlapping {
+    flex-direction: column;
+  }
+
   .board-stage .sudoku-grid {
     flex: 0 1 32rem;
     width: min(100%, 32rem);
+  }
+
+  .board-stage--overlapping .overlapping-board {
+    width: 100%;
   }
 
   .board-stage .entry-mode-controls {
@@ -196,6 +220,13 @@
     gap: 0.65rem;
     position: sticky;
     top: 1rem;
+  }
+
+  .board-stage--overlapping .entry-mode-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    position: static;
   }
 
   .board-stage .entry-mode-controls__group {
@@ -210,11 +241,16 @@
 
 @media (prefers-color-scheme: dark) {
   .setter-intro p,
-  .puzzle-summary {
+  .puzzle-summary,
+  .overlap-placeholder {
     color: #b8c0d4;
   }
 
   .puzzle-summary strong {
     color: #aeb2ff;
+  }
+
+  .puzzle-summary--error {
+    color: #f8d7da;
   }
 }

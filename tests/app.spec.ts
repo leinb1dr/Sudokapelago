@@ -353,3 +353,38 @@ test('places entry controls beside the board on wide screens and below on narrow
   await expect(controls).toBeVisible()
   await expect(grid).toBeVisible()
 })
+
+test('generates an overlapping puzzle with pan/zoom viewport and minimap', async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  await page.goto('/')
+
+  await page.getByRole('radio', { name: 'Overlapping' }).click()
+  await page.getByLabel('Box overlap').selectOption('1')
+  await page.getByLabel('Grid count').fill('2')
+  await page.getByRole('button', { name: /Generate 1-box × 2-grid easy puzzle/ }).click()
+
+  await expect(page.getByRole('status')).toContainText(
+    /easy puzzle · \d+ clues · \d+ cells tested · 2 grids · 1-box overlap/,
+    { timeout: 90_000 },
+  )
+
+  await expect(page.getByRole('region', { name: 'Puzzle viewport' })).toBeVisible()
+  await expect(page.getByRole('grid', { name: 'Sudoku grid 1' })).toBeVisible()
+  await expect(page.getByRole('grid', { name: 'Sudoku grid 2' })).toBeVisible()
+  await expect(page.locator('.puzzle-minimap')).toBeVisible()
+  await expect(page.locator('canvas')).toHaveCount(0)
+
+  const world = page.locator('.puzzle-viewport__world')
+  await expect(world).toHaveCSS('transform', /matrix/)
+
+  await page.getByRole('button', { name: 'Zoom in' }).click()
+  await expect(page.getByText(/\d+%/)).toBeVisible()
+
+  const grid = page.getByRole('grid', { name: 'Sudoku grid 1' })
+  const editable = grid.locator('[role="gridcell"][aria-readonly="false"]').first()
+  await editable.click()
+  await page.keyboard.press('5')
+  await expect(editable).toHaveText('5')
+})

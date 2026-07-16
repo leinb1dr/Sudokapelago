@@ -48,6 +48,8 @@ interface SudokuGridProps {
   cornerCenterMode: CornerCenterMode
   onBoardChange: (board: Board) => void
   onPencilBoardChange: (pencilBoard: PencilBoard) => void
+  /** Optional accessible name; defaults to "Sudoku grid". */
+  ariaLabel?: string
 }
 
 function getCellClassName(
@@ -99,6 +101,7 @@ function SudokuGrid({
   cornerCenterMode,
   onBoardChange,
   onPencilBoardChange,
+  ariaLabel = 'Sudoku grid',
 }: SudokuGridProps) {
   const [selectedCellIndex, setSelectedCellIndex] = useState<number | null>(null)
   const cellRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -191,7 +194,7 @@ function SudokuGrid({
   }
 
   return (
-    <div className="sudoku-grid" role="grid" aria-label="Sudoku grid">
+    <div className="sudoku-grid" role="grid" aria-label={ariaLabel}>
       {Array.from({ length: GRID_SIZE }).map((_, rowIndex) => (
         <div className="sudoku-grid__row" role="row" key={rowIndex}>
           {Array.from({ length: GRID_SIZE }).map((_, columnIndex) => {
