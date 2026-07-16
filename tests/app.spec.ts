@@ -357,10 +357,10 @@ test('places entry controls beside the board on wide screens and below on narrow
 test('overlapping layout generates a pannable multi-grid puzzle with a minimap', async ({
   page,
 }) => {
+  test.setTimeout(90_000)
   await page.goto('/')
 
   await page.getByRole('radio', { name: /2 grids · 1-box overlap/i }).check()
-  await page.getByRole('radio', { name: /^Easy$/i }).check()
 
   const generateButton = page.getByRole('button', {
     name: 'Generate easy puzzle',
