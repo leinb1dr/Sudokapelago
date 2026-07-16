@@ -189,4 +189,3 @@ function PuzzleViewport({
 }
 
 export default PuzzleViewport
-export { MIN_ZOOM, MAX_ZOOM, ZOOM_STEP, clampZoom }
