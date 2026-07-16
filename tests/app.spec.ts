@@ -445,3 +445,63 @@ test('long-press on a cell pans the overlapping viewport', async ({ page }) => {
   await editable.click()
   await expect(editable).toHaveAttribute('aria-selected', 'true')
 })
+
+test('places entry controls beside the overlapping board on wide screens and below on narrow', async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  await page.setViewportSize({ width: 1100, height: 800 })
+  await page.goto('/')
+
+  await page.getByRole('radio', { name: 'Overlapping' }).click()
+  await page.getByLabel('Box overlap').selectOption('1')
+  await page.getByLabel('Grid count').fill('2')
+  await page.getByRole('button', { name: /Generate 1-box × 2-grid easy puzzle/ }).click()
+
+  await expect(page.getByRole('status')).toContainText(
+    /easy puzzle · \d+ clues · \d+ cells tested · 2 grids · 1-box overlap/,
+    { timeout: 90_000 },
+  )
+
+  const controls = page.getByLabel('Entry controls')
+
+  let layout = await page.evaluate(() => {
+    const board = document.querySelector('.overlapping-board')
+    const panel = document.querySelector('.entry-mode-controls')
+    if (!(board instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+      return null
+    }
+
+    const boardBox = board.getBoundingClientRect()
+    const panelBox = panel.getBoundingClientRect()
+    return {
+      sideBySide: panelBox.left >= boardBox.right - 1,
+      below: panelBox.top >= boardBox.bottom - 1,
+    }
+  })
+
+  expect(layout?.sideBySide).toBe(true)
+  expect(layout?.below).toBe(false)
+
+  await page.setViewportSize({ width: 390, height: 800 })
+
+  layout = await page.evaluate(() => {
+    const board = document.querySelector('.overlapping-board')
+    const panel = document.querySelector('.entry-mode-controls')
+    if (!(board instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
+      return null
+    }
+
+    const boardBox = board.getBoundingClientRect()
+    const panelBox = panel.getBoundingClientRect()
+    return {
+      sideBySide: panelBox.left >= boardBox.right - 1,
+      below: panelBox.top >= boardBox.bottom - 1,
+    }
+  })
+
+  expect(layout?.sideBySide).toBe(false)
+  expect(layout?.below).toBe(true)
+  await expect(controls).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Puzzle viewport' })).toBeVisible()
+})
