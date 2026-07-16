@@ -368,6 +368,11 @@ test('overlapping layout generates a pannable multi-grid puzzle with a minimap',
   await generateButton.click()
 
   await expect(page.getByText(/2 grids ·/)).toBeVisible({ timeout: 60_000 })
+  await expect(page.getByText(/\d+ clues/)).toBeVisible()
+  const summary = await page.getByRole('status').last().textContent()
+  const clueMatch = summary?.match(/(\d+) clues/)
+  expect(Number(clueMatch?.[1])).toBeGreaterThan(9)
+  expect(Number(clueMatch?.[1])).toBeLessThan(153)
   await expect(
     page.getByRole('grid', { name: 'Overlapping Sudoku board' }),
   ).toBeVisible()
