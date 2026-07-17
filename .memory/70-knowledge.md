@@ -78,7 +78,7 @@ graph TD
 ## Resources
 
 - README.md — scripts, status, technique table
-- AGENTS.md — Cursor Cloud operational notes
+- AGENTS.md — Cursor Cloud operational notes; **mandates** full Memory Bank read
 - `.cursor/rules/modular-web-components.mdc`
 - `.cursor/skills/memory-bank/` — Memory Bank skill, architecture, workflows
 - Live site: https://leinb1dr.github.io/Sudokapelago/

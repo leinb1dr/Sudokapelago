@@ -115,7 +115,12 @@
     },
     {
       "path": "AGENTS.md",
-      "keywords": ["cursor cloud", "testing expectations"]
+      "keywords": [
+        "cursor cloud",
+        "testing expectations",
+        "memory bank mandatory",
+        "mem:fix"
+      ]
     },
     {
       "path": ".cursor/rules/modular-web-components.mdc",

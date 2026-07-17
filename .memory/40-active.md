@@ -1,18 +1,19 @@
 # Active Focus & State
 
 Grounded in [00-description.md](00-description.md). Last updated: 2026-07-17
-(Memory Bank `mem:init`).
+(AGENTS.md Memory Bank mandate).
 
 ## Current focus
 
-- Establish Memory Bank under `.memory/` so Cursor sessions load durable
-  project context (this init)
+- Enforce Memory Bank reads via `AGENTS.md` for all Cursor / cloud agents
 - Product surface is playable: standard + overlapping human-technique Sudoku
   with pan/zoom and pencil marks
 - Next major product gap: Archipelago session connect / multiworld behavior
 
 ## Recent changes (from git history)
 
+- `AGENTS.md` requires reading `.memory/` core files before any task
+- Memory Bank initialized under `.memory/` (`mem:init`)
 - Memory Bank Cursor skill added (`#25`)
 - Keyboard edge pan for puzzle viewport (`#24`)
 - Unified overlapping lattice rendering (`#23`)

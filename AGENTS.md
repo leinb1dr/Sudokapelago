@@ -1,5 +1,30 @@
 # AGENTS.md
 
+## Memory Bank (mandatory)
+
+Operational memory is ephemeral between sessions. Before undertaking **any**
+task or responding to **any** prompt, agents **MUST** read and process the
+**entire contents** of all core Memory Bank files in `.memory/`:
+
+1. `.memory/00-description.md` — start here (project foundation)
+2. `.memory/01-brief.md`
+3. `.memory/10-product.md`
+4. `.memory/20-system.md`
+5. `.memory/30-tech.md`
+6. `.memory/40-active.md`
+7. `.memory/50-progress.md`
+8. `.memory/60-decisions.md`
+9. `.memory/70-knowledge.md`
+
+Ground decisions in `00-description.md`. Use `.memory/semantic-index.json` for
+targeted retrieval after the full read. After significant work, update the
+relevant Memory Bank files (especially `40-active.md` and `50-progress.md`).
+
+**Exception:** skip the full read only when the user prompt explicitly includes
+`mem:fix` (minor, immediate corrections). See
+`.cursor/skills/memory-bank/SKILL.md` for `mem:init`, `mem:update`,
+`mem:snapshot`, `mem:search`, and `mem:health`.
+
 ## Cursor Cloud specific instructions
 
 Sudokapelago is a single-page TypeScript app (React + Vite) for a configurable

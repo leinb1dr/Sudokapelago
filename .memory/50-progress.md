@@ -34,7 +34,7 @@ GitHub Pages.
 | M3 Human-technique setter | Done |
 | M4 Pencil marks & keyboard UX | Done |
 | M5 Overlapping engine + viewport | Done |
-| M6 Memory Bank continuity | In progress (this init) |
+| M6 Memory Bank continuity | Done (`.memory/` + AGENTS.md mandate) |
 | M7 Archipelago session integration | Backlog |
 
 ## Issues / risks
