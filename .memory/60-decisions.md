@@ -3,6 +3,17 @@
 Grounded in [00-description.md](00-description.md). Chronological; newest first
 where known.
 
+## 2026-07 — AGENTS.md enforces Memory Bank reads
+
+- **Context:** Cloud agents load AGENTS.md automatically; Memory Bank skill alone
+  may not be attached every session.
+- **Decision:** Put a mandatory Memory Bank section at the top of `AGENTS.md`
+  requiring a full read of `.memory/00`–`70` before any task (`mem:fix` only
+  exception).
+- **Impact:** Continuity is enforced for Cursor Cloud without relying on skill
+  attachment alone.
+- **Validation:** AGENTS.md opens with Memory Bank (mandatory) section.
+
 ## 2026-07 — Memory Bank for agent continuity
 
 - **Context:** Ephemeral Cursor / cloud agent sessions need durable project
