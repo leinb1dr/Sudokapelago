@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-17",
+  "description": "Lightweight keyword index for Memory Bank retrieval. Full vector embeddings are optional future work under .memory/vector-db/.",
+  "coreFiles": [
+    {
+      "path": ".memory/00-description.md",
+      "role": "foundation",
+      "keywords": [
+        "sudokapelago",
+        "sudoku",
+        "archipelago",
+        "scope",
+        "vision",
+        "spa",
+        "github pages"
+      ]
+    },
+    {
+      "path": ".memory/01-brief.md",
+      "role": "charter",
+      "keywords": [
+        "requirements",
+        "success criteria",
+        "stakeholders",
+        "constraints"
+      ]
+    },
+    {
+      "path": ".memory/10-product.md",
+      "role": "product",
+      "keywords": [
+        "personas",
+        "journeys",
+        "ux",
+        "pencil marks",
+        "overlapping",
+        "features"
+      ]
+    },
+    {
+      "path": ".memory/20-system.md",
+      "role": "architecture",
+      "keywords": [
+        "architecture",
+        "setter",
+        "human solver",
+        "overlapping engine",
+        "worker",
+        "data flow"
+      ]
+    },
+    {
+      "path": ".memory/30-tech.md",
+      "role": "tech",
+      "keywords": [
+        "vite",
+        "react",
+        "typescript",
+        "oxlint",
+        "vitest",
+        "playwright",
+        "archipelago.js",
+        "scripts"
+      ]
+    },
+    {
+      "path": ".memory/40-active.md",
+      "role": "active",
+      "keywords": [
+        "priorities",
+        "blockers",
+        "open questions",
+        "current focus"
+      ]
+    },
+    {
+      "path": ".memory/50-progress.md",
+      "role": "progress",
+      "keywords": [
+        "milestones",
+        "backlog",
+        "completed",
+        "risks"
+      ]
+    },
+    {
+      "path": ".memory/60-decisions.md",
+      "role": "decisions",
+      "keywords": [
+        "adr",
+        "difficulty",
+        "techniques",
+        "unified lattice",
+        "memory bank",
+        "pages"
+      ]
+    },
+    {
+      "path": ".memory/70-knowledge.md",
+      "role": "knowledge",
+      "keywords": [
+        "technique tiers",
+        "setter algorithm",
+        "topology",
+        "faq",
+        "best practices"
+      ]
+    }
+  ],
+  "relatedPaths": [
+    {
+      "path": "README.md",
+      "keywords": ["getting started", "scripts", "techniques"]
+    },
+    {
+      "path": "AGENTS.md",
+      "keywords": ["cursor cloud", "testing expectations"]
+    },
+    {
+      "path": ".cursor/rules/modular-web-components.mdc",
+      "keywords": ["components", "modular"]
+    },
+    {
+      "path": ".cursor/skills/memory-bank/",
+      "keywords": ["mem:init", "mem:update", "mem:search", "workflows"]
+    },
+    {
+      "path": "src/sudoku/",
+      "keywords": ["domain", "setter", "techniques"]
+    },
+    {
+      "path": "src/sudoku/overlapping/",
+      "keywords": ["overlap", "topology", "worker", "global board"]
+    }
+  ]
+}
