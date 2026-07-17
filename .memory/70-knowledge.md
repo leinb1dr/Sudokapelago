@@ -48,6 +48,13 @@ Overlapping setter keeps shared boxes denser so uniqueness stays tractable.
 - Multiworld randomizer network ([archipelago.gg](https://archipelago.gg/))
 - JS client: [archipelago.js](https://archipelago.js.org/stable/)
 - Current: `Client` constructed; no login/room yet
+- **v1 progression pillars** (see `40-active.md` / `60-decisions.md`):
+  - Digit License (all digits unlockable; world default start `1,2,3`)
+  - Notation progression (pencil/candidate tiers)
+  - Progressive highlighting (warn / highlight / remove conflicts; client
+    toggles to disable assists)
+  - Optional grid unlocks (world option)
+  - Skipped: technique keys. Deferred: constraint cosmetics
 
 ## Relationship map
 
@@ -95,8 +102,13 @@ graph TD
 ## FAQ
 
 **Q: Why isn’t Archipelago connected yet?**  
-A: Client bootstrap proves dependency wiring; session/multiworld design is still
-planned.
+A: Client bootstrap proves dependency wiring. Progression pillars for v1 are
+documented in Memory Bank; session connect and item/check wiring are next.
+
+**Q: What do you unlock in Archipelago?**  
+A: Primarily skill tools — licensed digits, notation tiers, and progressive
+conflict assists — plus an optional world mode that unlocks overlapping grids.
+Technique keys are out for v1; constraint cosmetics are future.
 
 **Q: Can I change difficulty techniques?**  
 A: Yes — reorder/replace `TECHNIQUE_TIERS` or pass a custom `techniques` array

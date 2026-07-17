@@ -48,7 +48,9 @@ multiworld gameplay.
 3. **Inspect human solving** — run debug solve to apply selected techniques and
    log detailed step reasoning.
 4. **(Future) Connect to Archipelago** — join a multiworld session and receive
-   or send Sudoku-related items/checks.
+   or send Sudoku-related items/checks. v1 progression pillars are documented
+   in Memory Bank (Digit License, notation progression, progressive
+   highlighting, optional grid unlocks).
 
 ## Technical specifications
 

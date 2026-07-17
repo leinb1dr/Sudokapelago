@@ -3,6 +3,36 @@
 Grounded in [00-description.md](00-description.md). Chronological; newest first
 where known.
 
+## 2026-07 — Archipelago progression: skill tools first
+
+- **Context:** Need a unique Archipelago item design. Unlocking overlapping grids
+  alone copies another game and soft-locks on other players. Topology gates
+  (e.g. triangle: finish two bases before the apex) spend solve progress as a
+  key and fight skill-based flow.
+- **Options considered:** Grid unlocks only; topology gates; digit licenses;
+  notation progression; technique keys; constraint cosmetics; progressive
+  conflict highlighting; optional grid unlocks as a world setting.
+- **Decision (v1 progression pillars):**
+  1. **Digit License** — all digits 1–9 are unlockable items. AP world setting
+     chooses starting licensed digits; **default start = 1, 2, 3**. Unlicensed
+     digits cannot be entered until received.
+  2. **Notation progression** — pencil / candidate tooling unlocks in tiers
+     (no marks → center → corner → richer assist), so early play is skill-hard
+     without map-blocking the board.
+  3. **Progressive highlighting** — unlockable assist layers: conflict warning,
+     highlight conflicts, remove conflicts. Client options let players turn
+     these off (some solvers dislike assists) even when items are owned.
+  4. **Optional grid unlocks** — world option to gate overlapping grids as
+     items (compatibility / variety), not the default sole progression model.
+- **Deferred:** Technique keys (skipped for v1). Constraint cosmetics
+  (thermo, killer, diagonals, etc.) saved for future versions.
+- **Design principle:** Boards stay reachable; items widen the legal move set
+  and information channel. Soft-lock allowed as temporary difficulty, not as
+  permanent map dead-ends. Skill remains the primary gate.
+- **Impact:** Guides AP world YAML / slot options, item pool, and client UX
+  before protocol wiring. See [40-active.md](40-active.md) plan section.
+- **Validation:** Product + active Memory Bank updated; no protocol code yet.
+
 ## 2026-07 — AGENTS.md enforces Memory Bank reads
 
 - **Context:** Cloud agents load AGENTS.md automatically; Memory Bank skill alone

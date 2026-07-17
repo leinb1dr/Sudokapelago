@@ -49,7 +49,8 @@ Grounded in [00-description.md](00-description.md) and [01-brief.md](01-brief.md
 | Pan/zoom viewport + minimap + long-press pan | Done |
 | Entry controls layout for overlap | Done |
 | Archipelago.js client init | Done (no session yet) |
-| Archipelago connect / multiworld | Planned |
+| Archipelago progression design (v1) | Planned — Digit License (default start 1–3), notation progression, progressive conflict highlighting (toggleable), optional grid unlocks; technique keys skipped; constraint cosmetics deferred |
+| Archipelago connect / multiworld | Planned (after / with inventory gates) |
 | Puzzle persistence / share | Not started |
 
 ## UX guidelines
