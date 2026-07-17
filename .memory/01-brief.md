@@ -19,7 +19,9 @@ audience.
 
 1. Reliable human-technique puzzle generation (standard + overlapping)
 2. Comfortable browser play (keyboard, pencil marks, viewport for large boards)
-3. Archipelago session connectivity and multiworld gameplay hooks
+3. Archipelago session connectivity and multiworld gameplay hooks (v1:
+   Digit License, notation progression, progressive highlighting, optional
+   grid unlocks; see Memory Bank decision / active plan)
 
 ## Core requirements
 
